@@ -1,0 +1,1785 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gitar Gam Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #060913;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+        .note-dot {
+            transition: transform 0.14s ease, box-shadow 0.14s ease;
+        }
+        .note-dot:hover {
+            transform: scale(1.12);
+        }
+        .custom-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #060913;
+            border-radius: 9999px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24 selection:bg-amber-500/30 selection:text-amber-200">
+
+    <!-- 1. ÜST BAŞLIK (SADE) -->
+    <header class="sticky top-0 z-40 bg-[#060913]/95 backdrop-blur-md border-b border-slate-800/80 shadow-lg">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-3.5">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shadow-lg shadow-amber-500/20 shrink-0">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                    </svg>
+                </div>
+                <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-white">Gitar Gam Rehberi</h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- SEKME 1: GAMLAR & POZİSYONLAR              -->
+    <!-- ========================================== -->
+    <main id="tabScales" class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 space-y-6">
+        <!-- Kontrol Paneli -->
+        <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-xl space-y-2.5">
+            <div class="w-full flex items-center justify-between bg-[#060913] border border-slate-800 rounded-xl px-3.5 py-2.5">
+                <label for="scaleSelect" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-3">GAM</label>
+                <select id="scaleSelect" class="w-full bg-transparent text-sm font-bold text-[#38bdf8] focus:outline-none cursor-pointer text-right sm:text-left"></select>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 items-stretch">
+                <div class="flex items-center justify-between bg-[#060913] border border-slate-800 rounded-xl px-3 py-2">
+                    <label for="rootSelect" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-2">KÖK</label>
+                    <select id="rootSelect" class="w-full bg-transparent text-xs sm:text-sm font-bold text-[#f59e0b] focus:outline-none cursor-pointer text-right"></select>
+                </div>
+
+                <div class="grid grid-cols-3 bg-[#060913] border border-slate-800 rounded-xl p-1 gap-1" role="group" aria-label="Görünüm Modu">
+                    <button type="button" data-mode="note" class="mode-btn py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition cursor-pointer bg-[#f59e0b] text-slate-950 shadow">Nota</button>
+                    <button type="button" data-mode="interval" class="mode-btn py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition cursor-pointer text-slate-400 hover:text-white">Aralık</button>
+                    <button type="button" data-mode="finger" class="mode-btn py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition cursor-pointer text-slate-400 hover:text-white">Parmak</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Teori Kural Kartı & İlgili Ton Bağlantısı -->
+        <section id="theoryCard" class="bg-[#0d1323] border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl space-y-3"></section>
+
+        <!-- Renk Göstergesi -->
+        <div class="flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-slate-400">
+            <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-[#f59e0b] inline-block ring-2 ring-amber-300/60"></span>
+                    <strong class="text-slate-200">Kök Ses (Root)</strong>
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-3 h-3 rounded-full bg-[#38bdf8] inline-block ring-2 ring-sky-300/40"></span>
+                    <strong class="text-slate-200">Gam Notaları</strong>
+                </span>
+            </div>
+            <span class="text-[11px] text-slate-500">Notalara tıklayarak sesini dinleyebilirsiniz</span>
+        </div>
+
+        <!-- 5 Pozisyon Kartları (Kaydırmasız) -->
+        <section id="positionsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-5"></section>
+
+        <!-- Tüm Klavye (0 - 22. Perde Yatay Kaydırılabilir) -->
+        <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
+            <div class="flex items-center gap-2.5">
+                <span class="w-1.5 h-6 rounded-full bg-[#38bdf8] inline-block"></span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white">Tüm Klavye</h2>
+            </div>
+            <div id="fullFretboardContainer" class="overflow-x-auto custom-scroll pb-2"></div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- SEKME 2: DÖNÜŞÜM & TAVSİYELER               -->
+    <!-- ========================================== -->
+    <main id="tabGuide" class="hidden flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 space-y-6">
+        <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white">Dönüşümler</h2>
+                <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Temel minör pentatonik iskeletine sadece 1-2 nota ekleyerek diğer gamlara geçiş yapın.</p>
+            </div>
+            <div class="flex items-center justify-between sm:justify-end bg-[#060913] border border-slate-800 rounded-xl px-3.5 py-2 min-w-[170px]">
+                <label for="guideRootSelect" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-3">TON</label>
+                <select id="guideRootSelect" class="bg-transparent text-sm font-bold text-[#f59e0b] focus:outline-none cursor-pointer"></select>
+            </div>
+        </section>
+
+        <div class="flex flex-wrap items-center gap-4 px-1 text-xs text-slate-400">
+            <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#f59e0b] inline-block"></span>
+                <strong class="text-slate-200">Kök Ses</strong>
+            </span>
+            <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#38bdf8] inline-block"></span>
+                <strong class="text-slate-200">Temel Pentatonik İskeleti</strong>
+            </span>
+            <span class="flex items-center gap-1.5">
+                <span class="w-3 h-3 rounded-full bg-[#10b981] inline-block ring-2 ring-emerald-300"></span>
+                <strong class="text-emerald-300">Yeni Eklenen / Değişen Derece</strong>
+            </span>
+        </div>
+
+        <section id="transformationBoardsGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-5"></section>
+
+        <section id="minorBackingGuide" class="bg-[#0d1323] border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-5"></section>
+
+        <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
+            <div class="flex items-center gap-2.5">
+                <span class="w-1.5 h-6 rounded-full bg-[#f59e0b] inline-block"></span>
+                <h2 class="text-lg sm:text-xl font-extrabold text-white">Tavsiyeler</h2>
+            </div>
+            <div id="tipsList" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
+        </section>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- SEKME 3: AKORLAR                           -->
+    <!-- ========================================== -->
+    <main id="tabChords" class="hidden flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 py-5 space-y-5">
+        <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-1.5 shadow-xl">
+            <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" id="subTabLibBtn" onclick="switchChordSubTab('library')" class="py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer bg-[#f59e0b] text-slate-950 shadow">
+                    Kütüphane
+                </button>
+                <button type="button" id="subTabInvBtn" onclick="switchChordSubTab('inversions')" class="py-2.5 px-2 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer text-slate-400 hover:text-white">
+                    Çevrimler
+                </button>
+                <button type="button" id="subTabTriadsBtn" onclick="switchChordSubTab('triads')" class="py-2.5 px-2 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer text-slate-400 hover:text-white">
+                    Triadlar
+                </button>
+            </div>
+        </section>
+
+        <!-- ALT SEKME 1: AKOR KÜTÜPHANESİ -->
+        <div id="chordSubLibrary" class="space-y-4">
+            <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-3.5 sm:p-4 shadow-xl">
+                <div class="w-full flex items-center justify-between bg-[#060913] border border-slate-800 rounded-xl px-3.5 py-2.5">
+                    <label for="chordTypeDropdown" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-3">AKOR TÜRÜ</label>
+                    <select id="chordTypeDropdown" class="w-full bg-transparent text-sm font-bold text-[#f59e0b] focus:outline-none cursor-pointer text-right sm:text-left"></select>
+                </div>
+            </section>
+
+            <div id="chordLibraryGrid" class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4"></div>
+        </div>
+
+        <!-- ALT SEKME 2: ÇEVRİM AKORLAR -->
+        <div id="chordSubInversions" class="hidden space-y-4">
+            <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-xl">
+                <div>
+                    <h2 class="text-base sm:text-lg font-extrabold text-white">Çevrim Akorlar</h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                        Akorun en pesteki bas sesini (3'lü, 5'li veya 7'li) değiştirerek klavyede akıcı bas yürüyüşleri ve geçişler oluşturun.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div class="flex items-center justify-between bg-[#060913] border border-slate-800 rounded-xl px-3 py-2.5">
+                        <label for="invRootSelect" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-2">KÖK</label>
+                        <select id="invRootSelect" class="w-full bg-transparent text-xs sm:text-sm font-bold text-[#f59e0b] focus:outline-none cursor-pointer text-right"></select>
+                    </div>
+                    <div class="flex items-center justify-between bg-[#060913] border border-slate-800 rounded-xl px-3 py-2.5">
+                        <label for="invTypeSelect" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-2">TÜR</label>
+                        <select id="invTypeSelect" class="w-full bg-transparent text-xs sm:text-sm font-bold text-[#38bdf8] focus:outline-none cursor-pointer text-right"></select>
+                    </div>
+                </div>
+            </section>
+
+            <div id="inversionsGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"></div>
+        </div>
+
+        <!-- ALT SEKME 3: TRIADLAR -->
+        <div id="chordSubTriads" class="hidden space-y-5">
+            <section class="bg-[#0d1323] border border-slate-800 rounded-2xl p-4 sm:p-5 space-y-4 shadow-xl">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-1.5 h-6 rounded-full bg-[#f59e0b] inline-block"></span>
+                    <h2 class="text-base sm:text-lg font-extrabold text-white">Triad Nedir ve Nasıl Kurulur?</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    <strong class="text-white">Triad (Üçlü Akor)</strong>, bir gamın <strong class="text-[#f59e0b]">1. (Kök)</strong>, <strong class="text-[#38bdf8]">3. (Üçlü)</strong> ve <strong class="text-[#10b981]">5. (Beşli)</strong> derecelerinin üst üste gelmesiyle oluşan en temel akor yapısıdır. Gitarda 6 teli birden çalmak yerine yalnızca bitişik <strong class="text-white">3 tel grubu</strong> üzerinde triad basmak; solo atarken akorları takip etmeyi, ritimlerde temiz duyulmayı ve klavyede yatay geçiş yapmayı sağlar.
+                </p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3 space-y-1">
+                        <div class="font-extrabold text-[#f59e0b]">Majör Triad</div>
+                        <div class="text-[#38bdf8] font-bold">1 – 3 – 5</div>
+                        <p class="text-[11px] text-slate-400">Parlak ve kararlı tını (Kök + 4 + 3 yarım ses).</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3 space-y-1">
+                        <div class="font-extrabold text-[#f59e0b]">Minör Triad</div>
+                        <div class="text-[#38bdf8] font-bold">1 – ♭3 – 5</div>
+                        <p class="text-[11px] text-slate-400">3. derece yarım ses pesleşir; hüzünlü ve duygusal tını.</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3 space-y-1">
+                        <div class="font-extrabold text-[#f59e0b]">Diminished</div>
+                        <div class="text-[#38bdf8] font-bold">1 – ♭3 – ♭5</div>
+                        <p class="text-[11px] text-slate-400">Hem 3'lü hem 5'li pesleşir; gergin ve geçici tını.</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3 space-y-1">
+                        <div class="font-extrabold text-[#f59e0b]">Augmented</div>
+                        <div class="text-[#38bdf8] font-bold">1 – 3 – ♯5</div>
+                        <p class="text-[11px] text-slate-400">5. derece yarım ses tizleşir; gizemli ve yükselen tını.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5 pt-1">
+                    <div class="flex items-center justify-between bg-[#060913] border border-slate-800 rounded-xl px-3 py-2.5">
+                        <label for="triadRootSelect" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-2">KÖK TON</label>
+                        <select id="triadRootSelect" class="w-full bg-transparent text-xs sm:text-sm font-bold text-[#f59e0b] focus:outline-none cursor-pointer text-right"></select>
+                    </div>
+                    <div class="flex items-center justify-between bg-[#060913] border border-slate-800 rounded-xl px-3 py-2.5">
+                        <label for="triadTypeSelect" class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mr-2">TRİAD</label>
+                        <select id="triadTypeSelect" class="w-full bg-transparent text-xs sm:text-sm font-bold text-[#38bdf8] focus:outline-none cursor-pointer text-right"></select>
+                    </div>
+                </div>
+            </section>
+
+            <div id="triadsGrid" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"></div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 2. ALT NAVİGASYON BARI (FIXED BOTTOM)      -->
+    <!-- ========================================== -->
+    <nav class="fixed bottom-0 left-0 right-0 z-50 bg-[#060913]/95 backdrop-blur-lg border-t border-slate-800 shadow-[0_-8px_30px_rgba(0,0,0,0.65)]" aria-label="Alt Navigasyon">
+        <div class="max-w-lg mx-auto grid grid-cols-3 h-16">
+            <button type="button" id="navBtnScales" onclick="switchMainTab('scales')" class="flex flex-col items-center justify-center gap-1 text-[#f59e0b] transition cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <rect x="3" y="4" width="18" height="16" rx="2"></rect>
+                    <line x1="9" y1="4" x2="9" y2="20"></line>
+                    <line x1="15" y1="4" x2="15" y2="20"></line>
+                    <line x1="3" y1="9.33" x2="21" y2="9.33"></line>
+                    <line x1="3" y1="14.66" x2="21" y2="14.66"></line>
+                </svg>
+                <span class="text-[11px] font-bold tracking-tight">Gamlar</span>
+            </button>
+
+            <button type="button" id="navBtnGuide" onclick="switchMainTab('guide')" class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-slate-200 transition cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                </svg>
+                <span class="text-[11px] font-semibold tracking-tight">Dönüşüm</span>
+            </button>
+
+            <button type="button" id="navBtnChords" onclick="switchMainTab('chords')" class="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-slate-200 transition cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                </svg>
+                <span class="text-[11px] font-semibold tracking-tight">Akorlar</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // ==========================================
+        // 1. MÜZİK TEORİSİ VERİLERİ & SABİTLER
+        // ==========================================
+        const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+        const CHROMATIC_C = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const NOTE_NAMES_TR = {
+            'C': 'Do', 'C#': 'Do Diyez', 'D': 'Re', 'D#': 'Re Diyez', 'E': 'Mi', 'F': 'Fa',
+            'F#': 'Fa Diyez', 'G': 'Sol', 'G#': 'Sol Diyez', 'A': 'La', 'A#': 'La Diyez', 'B': 'Si'
+        };
+
+        // Teller: index 0 = 1. tel (ince e), index 5 = 6. tel (kalın E)
+        const STRINGS = [
+            { name: 'e', midi: 64 },
+            { name: 'B', midi: 59 },
+            { name: 'G', midi: 55 },
+            { name: 'D', midi: 50 },
+            { name: 'A', midi: 45 },
+            { name: 'E', midi: 40 }
+        ];
+
+        const INLAY_FRETS = [3, 5, 7, 9, 12, 15, 17, 19, 21];
+        const DOUBLE_INLAY_FRETS = [12];
+
+        // Tüm pozisyon matrisleri [1. tel (e), 2. tel (B), 3. tel (G), 4. tel (D), 5. tel (A), 6. tel (E)] sırasındadır.
+        // anchor: İşaret parmağının (1. parmak) sabit durduğu ana el merkezi perdesi (refRoot tonuna göre).
+        const SCALES = {
+            minor_pentatonic: {
+                name: 'Minör Pentatonik',
+                formula: '1 – ♭3 – 4 – 5 – ♭7',
+                desc: 'Doğal minör gamın 2. ve 6. derecelerinin çıkarılmasıyla elde edilir. Rock, blues ve pop sololarının en temel yapı taşıdır.',
+                intervals: [0, 3, 5, 7, 10],
+                intervalNames: ['R', '♭3', '4', '5', '♭7'],
+                refRoot: 'A',
+                related: { offset: 3, targetScale: 'major_pentatonic', label: 'İlgili Majör Pentatonik' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 5,  frets: [[5,8], [5,8], [5,7], [5,7], [5,7], [5,8]] },
+                    { name: '2. Pozisyon', anchor: 7,  frets: [[8,10], [8,10], [7,9], [7,10], [7,10], [8,10]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[10,12], [10,13], [9,12], [10,12], [10,12], [10,12]] },
+                    { name: '4. Pozisyon', anchor: 12, frets: [[12,15], [13,15], [12,14], [12,14], [12,15], [12,15]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[3,5], [3,5], [2,5], [2,5], [3,5], [3,5]] }
+                ]
+            },
+            natural_minor: {
+                name: 'Natürel Minör',
+                formula: '1 – 2 – ♭3 – 4 – 5 – ♭6 – ♭7',
+                desc: 'Minör pentatonik kalıplarının arasına 2. ve ♭6. derecelerin eklenmesiyle oluşur. Hüzünlü ve melodik sololar için idealdir.',
+                intervals: [0, 2, 3, 5, 7, 8, 10],
+                intervalNames: ['R', '2', '♭3', '4', '5', '♭6', '♭7'],
+                refRoot: 'A',
+                related: { offset: 3, targetScale: 'major', label: 'İlgili Majör Gam' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 5,  frets: [[5,7,8], [5,6,8], [4,5,7], [5,7], [5,7,8], [5,7,8]] },
+                    { name: '2. Pozisyon', anchor: 7,  frets: [[7,8,10], [8,10], [7,9,10], [7,9,10], [7,8,10], [7,8,10]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[10,12,13], [10,12,13], [9,10,12], [9,10,12], [10,12], [10,12,13]] },
+                    { name: '4. Pozisyon', anchor: 12, frets: [[12,13,15], [12,13,15], [12,14], [12,14,15], [12,14,15], [12,13,15]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[3,5], [3,5,6], [2,4,5], [2,3,5], [2,3,5], [3,5]] }
+                ]
+            },
+            major_pentatonic: {
+                name: 'Majör Pentatonik',
+                formula: '1 – 2 – 3 – 5 – 6',
+                desc: 'İlgili minör pentatonik kalıplarıyla aynı parmak dizilimine sahiptir; yalnızca kök nota (1. derece) değişir. Parlak ve neşeli tınlar.',
+                intervals: [0, 2, 4, 7, 9],
+                intervalNames: ['R', '2', '3', '5', '6'],
+                refRoot: 'A',
+                related: { offset: 9, targetScale: 'minor_pentatonic', label: 'İlgili Minör Pentatonik' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 4,  frets: [[5,7], [5,7], [4,6], [4,7], [4,7], [5,7]] },
+                    { name: '2. Pozisyon', anchor: 7,  frets: [[7,9], [7,10], [6,9], [7,9], [7,9], [7,9]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[9,12], [10,12], [9,11], [9,11], [9,12], [9,12]] },
+                    { name: '4. Pozisyon', anchor: 11, frets: [[12,14], [12,14], [11,14], [11,14], [12,14], [12,14]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[2,5], [2,5], [2,4], [2,4], [2,4], [2,5]] }
+                ]
+            },
+            major: {
+                name: 'Majör Gam',
+                formula: '1 – 2 – 3 – 4 – 5 – 6 – 7',
+                desc: 'Batı müziğinin temel referans gamıdır (Ionian). Parlak, dengeli ve kararlı melodiler kurmak için 5 CAGED pozisyonunda kullanılır.',
+                intervals: [0, 2, 4, 5, 7, 9, 11],
+                intervalNames: ['R', '2', '3', '4', '5', '6', '7'],
+                refRoot: 'A',
+                related: { offset: 9, targetScale: 'natural_minor', label: 'İlgili Natürel Minör' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 4,  frets: [[4,5,7], [5,7], [4,6,7], [4,6,7], [4,5,7], [5,7]] },
+                    { name: '2. Pozisyon', anchor: 6,  frets: [[7,9,10], [7,9,10], [6,7,9], [6,7,9], [7,9], [7,9,10]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[9,10,12], [9,10,12], [9,11], [9,11,12], [9,11,12], [9,10,12]] },
+                    { name: '4. Pozisyon', anchor: 11, frets: [[12,14], [12,14,15], [11,13,14], [11,12,14], [11,12,14], [12,14]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[2,4,5], [2,3,5], [1,2,4], [2,4], [2,4,5], [2,4,5]] }
+                ]
+            },
+            harmonic_minor: {
+                name: 'Armonik Minör',
+                formula: '1 – 2 – ♭3 – 4 – 5 – ♭6 – 7',
+                desc: 'Doğal minördeki 7. derecenin yarım ses tizleştirilmesiyle elde edilir. Dominant (V7) akorlar üzerinde güçlü bir doğu/flamenko tınısı verir.',
+                intervals: [0, 2, 3, 5, 7, 8, 11],
+                intervalNames: ['R', '2', '♭3', '4', '5', '♭6', '7'],
+                refRoot: 'A',
+                related: { offset: 7, targetScale: 'jazz_bebop', label: 'Dominant Caz / Bebop Geçişi' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 5,  frets: [[4,5,7,8], [5,6], [4,5,7], [6,7], [5,7,8], [4,5,7,8]] },
+                    { name: '2. Pozisyon', anchor: 7,  frets: [[7,8,10], [9,10], [7,9,10], [7,9,10], [7,8,11], [7,8,10]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[10,12,13], [10,12,13], [9,10,13], [9,10,12,13], [11,12], [10,12,13]] },
+                    { name: '4. Pozisyon', anchor: 12, frets: [[12,13,16], [12,13,15], [13,14], [12,13,15], [12,14,15], [12,13,16]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[1,4,5], [3,5,6], [2,4,5], [2,3,6], [2,3,5], [1,4,5]] }
+                ]
+            },
+            melodic_minor: {
+                name: 'Melodik Minör',
+                formula: '1 – 2 – ♭3 – 4 – 5 – 6 – 7',
+                desc: 'Doğal minörün 6. ve 7. derecelerinin yarım ses tizleştirilmesiyle oluşur. Caz ve fusion doğaçlamaları için vazgeçilmezdir.',
+                intervals: [0, 2, 3, 5, 7, 9, 11],
+                intervalNames: ['R', '2', '♭3', '4', '5', '6', '7'],
+                refRoot: 'A',
+                related: { offset: 0, targetScale: 'natural_minor', label: 'Aynı Kök Natürel Minör' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 5,  frets: [[4,5,7,8], [5,7], [4,5,7], [4,6,7], [5,7], [4,5,7,8]] },
+                    { name: '2. Pozisyon', anchor: 7,  frets: [[7,8,10], [7,9,10], [7,9], [7,9,10], [7,9,11], [7,8,10]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[10,12], [10,12], [9,11,13], [9,10,12,13], [9,11,12], [10,12]] },
+                    { name: '4. Pozisyon', anchor: 12, frets: [[12,14,16], [12,14,15], [11,13,14], [12,14], [12,14,15], [12,14,16]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[2,4,5], [3,5], [2,4,5], [2,4,6], [2,3,5], [2,4,5]] }
+                ]
+            },
+            blues: {
+                name: 'Blues Gam',
+                formula: '1 – ♭3 – 4 – ♭5 – 5 – ♭7',
+                desc: 'Minör pentatonik kalıplarının içine "blue note" (♭5 — eksiltilmiş beşli) eklenmesiyle elde edilir. Gergin ve duygulu geçişler sağlar.',
+                intervals: [0, 3, 5, 6, 7, 10],
+                intervalNames: ['R', '♭3', '4', '♭5', '5', '♭7'],
+                refRoot: 'A',
+                related: { offset: 0, targetScale: 'minor_pentatonic', label: 'Temel Minör Pentatonik' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 5,  frets: [[5,8], [5,8], [5,7,8], [5,7], [5,6,7], [5,8]] },
+                    { name: '2. Pozisyon', anchor: 7,  frets: [[8,10,11], [8,10], [7,8,9], [7,8,10], [7,10], [8,10,11]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[10,11,12], [10,11,13], [9,12], [10,12], [10,12,13], [10,11,12]] },
+                    { name: '4. Pozisyon', anchor: 12, frets: [[12,15], [13,15,16], [12,14], [12,13,14], [12,13,15], [12,15]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[3,5], [3,4,5], [2,3,5], [2,5], [3,5,6], [3,5]] }
+                ]
+            },
+            jazz_bebop: {
+                name: 'Caz Gam (Bebop)',
+                formula: '1 – 2 – ♭3 – 3 – 4 – 5 – 6 – ♭7',
+                desc: 'Dorian ve Mixolydian renklerini majör/minör 3’lü kromatik geçişiyle birleştiren 8 sesli caz (Bebop) gamıdır; akor seslerini vuruş üstüne oturtur.',
+                intervals: [0, 2, 3, 4, 5, 7, 9, 10],
+                intervalNames: ['R', '2', '♭3', '3', '4', '5', '6', '♭7'],
+                refRoot: 'A',
+                related: { offset: 5, targetScale: 'major', label: 'İlgili Majör Merkezi' },
+                templates: [
+                    { name: '1. Pozisyon', anchor: 5,  frets: [[5,7,8], [5,7,8], [4,5,6,7], [4,5,7], [4,5,7], [5,7,8]] },
+                    { name: '2. Pozisyon', anchor: 7,  frets: [[7,8,9,10], [7,8,10], [7,9], [7,9,10], [7,9,10], [7,8,9,10]] },
+                    { name: '3. Pozisyon', anchor: 9,  frets: [[9,10,12], [10,12,13], [9,11,12], [9,10,11,12], [9,10,12], [9,10,12]] },
+                    { name: '4. Pozisyon', anchor: 12, frets: [[12,14,15], [12,13,14,15], [11,12,13,14], [12,14], [12,14,15], [12,14,15]] },
+                    { name: '5. Pozisyon', anchor: 2,  frets: [[2,3,5], [3,5], [2,4,5], [2,4,5], [2,3,4,5], [2,3,5]] }
+                ]
+            }
+        };
+
+        const CHORD_TYPES = [
+            { id: 'maj', label: 'Majör', trName: 'Majör', suffix: '', intervals: [0, 4, 7] },
+            { id: 'min', label: 'Minör (m)', trName: 'Minör', suffix: 'm', intervals: [0, 3, 7] },
+            { id: '7', label: 'Dominant 7 (7)', trName: 'Dominant 7', suffix: '7', intervals: [0, 4, 7, 10] },
+            { id: 'maj7', label: 'Majör 7 (Maj7)', trName: 'Majör 7', suffix: 'maj7', intervals: [0, 4, 7, 11] },
+            { id: 'm7', label: 'Minör 7 (m7)', trName: 'Minör 7', suffix: 'm7', intervals: [0, 3, 7, 10] },
+            { id: 'sus2', label: 'Sus2', trName: 'Sus2', suffix: 'sus2', intervals: [0, 2, 7] },
+            { id: 'sus4', label: 'Sus4', trName: 'Sus4', suffix: 'sus4', intervals: [0, 5, 7] },
+            { id: 'm7b5', label: 'Minör 7♭5 (m7♭5)', trName: 'Minör 7♭5', suffix: 'm7♭5', intervals: [0, 3, 6, 10] },
+            { id: 'dim', label: 'Diminished (dim)', trName: 'Diminished', suffix: 'dim', intervals: [0, 3, 6] },
+            { id: 'dim7', label: 'Diminished 7 (dim7)', trName: 'Dim7', suffix: 'dim7', intervals: [0, 3, 6, 9] },
+            { id: '6', label: 'Majör 6 (6)', trName: 'Majör 6', suffix: '6', intervals: [0, 4, 7, 9] },
+            { id: 'm6', label: 'Minör 6 (m6)', trName: 'Minör 6', suffix: 'm6', intervals: [0, 3, 7, 9] },
+            { id: 'add9', label: 'Add9', trName: 'Add9', suffix: 'add9', intervals: [0, 4, 7, 14] }
+        ];
+
+        // ==========================================
+        // 2. UYGULAMA DURUMU (STATE)
+        // ==========================================
+        const state = {
+            activeTab: 'scales',
+            root: 'A',
+            guideRoot: 'A',
+            scaleKey: 'natural_minor',
+            displayMode: 'note',
+            octaveOverrides: {},
+            currentPositions: [],
+            chordSubTab: 'library',
+            selectedChordType: 'maj',
+            chordAltIndex: {},
+            invRoot: 'C',
+            invType: 'maj',
+            triadRoot: 'C',
+            triadType: 'maj',
+            triadAltIndex: {}
+        };
+
+        // ==========================================
+        // 3. WEB AUDIO API (GİTAR SES SENTEZLEYİCİ)
+        // ==========================================
+        let audioCtx = null;
+
+        function ensureAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playGuitarNote(midi, duration = 0.75) {
+            try {
+                ensureAudio();
+                const freq = 440 * Math.pow(2, (midi - 69) / 12);
+                const now = audioCtx.currentTime;
+
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const filter = audioCtx.createBiquadFilter();
+                const gain = audioCtx.createGain();
+
+                osc1.type = 'triangle';
+                osc2.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(freq, now);
+                osc2.frequency.setValueAtTime(freq, now);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(freq * 5.5, now);
+                filter.frequency.exponentialRampToValueAtTime(freq * 1.4, now + duration);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.24, now + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.0008, now + duration);
+
+                osc1.connect(filter);
+                osc2.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc1.start(now);
+                osc2.start(now);
+                osc1.stop(now + duration);
+                osc2.stop(now + duration);
+            } catch (e) {}
+        }
+
+        function playChordStrum(frets) {
+            const openMidis = [40, 45, 50, 55, 59, 64];
+            let delay = 0;
+            for (let s = 0; s < 6; s++) {
+                const f = frets[s];
+                if (typeof f === 'number' && f >= 0) {
+                    const midi = openMidis[s] + f;
+                    setTimeout(() => playGuitarNote(midi, 1.2), delay);
+                    delay += 45;
+                }
+            }
+        }
+
+        function playPositionSequence(posIndex) {
+            const pos = state.currentPositions[posIndex];
+            if (!pos) return;
+            const ascending = [];
+            for (let s = 5; s >= 0; s--) {
+                const frets = pos.frets[s] || [];
+                frets.forEach(f => {
+                    ascending.push(STRINGS[s].midi + f);
+                });
+            }
+            const descending = ascending.slice(0, -1).reverse();
+            const fullSeq = ascending.concat(descending);
+
+            fullSeq.forEach((midi, idx) => {
+                setTimeout(() => {
+                    playGuitarNote(midi, 0.5);
+                }, idx * 190);
+            });
+        }
+
+        // ==========================================
+        // 4. AKILLI PARMAK & POZİSYON HESAPLAMA MOTORU
+        // ==========================================
+        function getNoteNameFromMidi(midi) {
+            return CHROMATIC_C[midi % 12];
+        }
+
+        function getIntervalLabel(midi, rootNote, scaleObj) {
+            const rootIdx = CHROMATIC_C.indexOf(rootNote);
+            const noteIdx = midi % 12;
+            const semitone = (noteIdx - rootIdx + 12) % 12;
+            const idx = scaleObj.intervals.indexOf(semitone);
+            return idx !== -1 ? scaleObj.intervalNames[idx] : '';
+        }
+
+        // Anchor Fret + Stretch + Serçe Parmak Kaydırma Mantığı
+        function computeErgonomicFingers(shiftedFrets, anchorFret) {
+            return shiftedFrets.map(strFrets => {
+                return strFrets.map(f => {
+                    if (f === 0) return '0';
+                    if (f <= anchorFret) return '1';
+                    const offset = f - anchorFret;
+                    if (offset === 1) return '2';
+                    if (offset === 2) return '3';
+                    return '4';
+                });
+            });
+        }
+
+        function computePositions(root, scaleKey) {
+            const scaleObj = SCALES[scaleKey];
+            const rootIdx = CHROMATIC_C.indexOf(root);
+            const refIdx = CHROMATIC_C.indexOf(scaleObj.refRoot);
+            const shift = (rootIdx - refIdx + 12) % 12;
+
+            return scaleObj.templates.map((tpl, idx) => {
+                let shiftedFrets = tpl.frets.map(strFrets => strFrets.map(f => f + shift));
+                let anchor = tpl.anchor + shift;
+                let maxFret = Math.max(...shiftedFrets.flat());
+
+                // 20. perde sınırı koruması
+                if (maxFret > 20) {
+                    shiftedFrets = shiftedFrets.map(strFrets => strFrets.map(f => f - 12));
+                    anchor -= 12;
+                }
+
+                let minFret = Math.min(...shiftedFrets.flat());
+                maxFret = Math.max(...shiftedFrets.flat());
+
+                const canShiftDown = minFret >= 12;
+                const canShiftUp = maxFret + 12 <= 20;
+                const override = state.octaveOverrides[idx] || 0;
+
+                if (override === -12 && canShiftDown) {
+                    shiftedFrets = shiftedFrets.map(strFrets => strFrets.map(f => f - 12));
+                    anchor -= 12;
+                } else if (override === 12 && canShiftUp) {
+                    shiftedFrets = shiftedFrets.map(strFrets => strFrets.map(f => f + 12));
+                    anchor += 12;
+                }
+
+                minFret = Math.min(...shiftedFrets.flat());
+                maxFret = Math.max(...shiftedFrets.flat());
+                const effectiveAnchor = Math.max(1, anchor);
+                const fingers = computeErgonomicFingers(shiftedFrets, effectiveAnchor);
+
+                return {
+                    name: tpl.name,
+                    frets: shiftedFrets,
+                    fingers,
+                    minFret,
+                    maxFret,
+                    canToggleOctave: (minFret >= 12) || (maxFret + 12 <= 20)
+                };
+            });
+        }
+
+        function renderFretboardHTML(options) {
+            const {
+                idPrefix,
+                startFret,
+                endFret,
+                fretsByString,
+                fingersByString = null,
+                rootNote,
+                scaleObj,
+                displayMode = 'note',
+                highlightNewSet = null,
+                scrollable = false
+            } = options;
+
+            const numFrets = endFret - startFret + 1;
+            const minWidthStyle = scrollable ? `style="min-width: ${numFrets * 48}px;"` : '';
+
+            let html = `<div class="bg-[#060913] border border-slate-800/90 rounded-xl p-2.5 sm:p-3 select-none" ${minWidthStyle}>`;
+
+            html += `<div class="flex items-center mb-1.5">`;
+            html += `<div class="w-6 shrink-0"></div>`;
+            html += `<div class="flex-1 grid" style="grid-template-columns: repeat(${numFrets}, minmax(0, 1fr));">`;
+            for (let f = startFret; f <= endFret; f++) {
+                const isMarker = INLAY_FRETS.includes(f);
+                html += `<div class="text-center text-[10px] sm:text-[11px] font-bold ${isMarker ? 'text-[#f59e0b]' : 'text-slate-500'}">${f}</div>`;
+            }
+            html += `</div></div>`;
+
+            html += `<div class="relative rounded-lg bg-[#11182c] border border-slate-800 overflow-hidden">`;
+            for (let s = 0; s < 6; s++) {
+                const str = STRINGS[s];
+                const activeFrets = fretsByString[s] || [];
+                const activeFingers = fingersByString ? (fingersByString[s] || []) : [];
+                const wireThickness = (1 + s * 0.35).toFixed(2);
+
+                html += `<div class="flex items-center h-8 sm:h-9 border-b border-slate-800/40 last:border-b-0 relative">`;
+                html += `<div class="w-6 shrink-0 text-center text-[11px] font-extrabold text-slate-400 bg-[#0a0f1f] h-full flex items-center justify-center border-r border-slate-700">${str.name}</div>`;
+
+                html += `<div class="flex-1 h-full grid relative" style="grid-template-columns: repeat(${numFrets}, minmax(0, 1fr));">`;
+                for (let f = startFret; f <= endFret; f++) {
+                    const fIdx = activeFrets.indexOf(f);
+                    const hasNote = fIdx !== -1;
+                    const midi = str.midi + f;
+                    const noteName = getNoteNameFromMidi(midi);
+                    const isRoot = noteName === rootNote;
+                    const isNut = f === 0;
+
+                    let inlayHTML = '';
+                    if (s === 2 && INLAY_FRETS.includes(f) && !DOUBLE_INLAY_FRETS.includes(f)) {
+                        inlayHTML = `<span class="w-2 h-2 rounded-full bg-slate-600/35 pointer-events-none"></span>`;
+                    } else if (DOUBLE_INLAY_FRETS.includes(f) && (s === 1 || s === 4)) {
+                        inlayHTML = `<span class="w-2 h-2 rounded-full bg-slate-600/45 pointer-events-none"></span>`;
+                    }
+
+                    html += `<div class="relative flex items-center justify-center ${isNut ? 'border-r-4 border-slate-300 bg-slate-900/60' : 'border-r border-slate-700/75'} last:border-r-0">`;
+                    html += `<div class="absolute left-0 right-0 top-1/2 -translate-y-1/2 bg-slate-400/35 pointer-events-none" style="height:${wireThickness}px;"></div>`;
+                    html += inlayHTML;
+
+                    if (hasNote) {
+                        let label = noteName;
+                        if (displayMode === 'interval') {
+                            label = getIntervalLabel(midi, rootNote, scaleObj);
+                        } else if (displayMode === 'finger' && activeFingers[fIdx]) {
+                            label = activeFingers[fIdx];
+                        }
+
+                        const isNewAltered = highlightNewSet && highlightNewSet.has(`${s}-${f}`);
+                        let dotClasses = 'bg-[#38bdf8] text-slate-950 ring-2 ring-sky-300/40';
+                        if (isRoot) {
+                            dotClasses = 'bg-[#f59e0b] text-slate-950 ring-2 ring-amber-300 shadow-md shadow-amber-500/30';
+                        } else if (isNewAltered) {
+                            dotClasses = 'bg-[#10b981] text-slate-950 ring-2 ring-emerald-300 shadow-md shadow-emerald-500/30';
+                        }
+
+                        html += `
+                            <button type="button"
+                                id="dot-${idPrefix}-${s}-${f}"
+                                onclick="playGuitarNote(${midi});"
+                                class="note-dot relative z-10 w-6 h-6 sm:w-7 sm:h-7 rounded-full ${dotClasses} text-[10px] sm:text-[11px] font-extrabold flex items-center justify-center cursor-pointer shadow">
+                                ${label}
+                            </button>
+                        `;
+                    }
+                    html += `</div>`;
+                }
+                html += `</div></div>`;
+            }
+            html += `</div></div>`;
+            return html;
+        }
+
+        function togglePositionOctave(posIdx) {
+            const pos = state.currentPositions[posIdx];
+            if (!pos) return;
+            const current = state.octaveOverrides[posIdx] || 0;
+            if (pos.minFret >= 12) {
+                state.octaveOverrides[posIdx] = current === -12 ? 0 : -12;
+            } else if (pos.maxFret + 12 <= 20) {
+                state.octaveOverrides[posIdx] = current === 12 ? 0 : 12;
+            }
+            renderApp();
+        }
+
+        function applyRelatedScale(targetRoot, targetScale) {
+            state.root = targetRoot;
+            state.scaleKey = targetScale;
+            state.octaveOverrides = {};
+            document.getElementById('rootSelect').value = targetRoot;
+            document.getElementById('scaleSelect').value = targetScale;
+            renderApp();
+        }
+
+        function renderApp() {
+            const scaleObj = SCALES[state.scaleKey];
+            const rootNote = state.root;
+            const rootIdx = CHROMATIC_C.indexOf(rootNote);
+
+            const scaleNotesList = scaleObj.intervals.map(semi => CHROMATIC_C[(rootIdx + semi) % 12]);
+            const relRoot = CHROMATIC_C[(rootIdx + scaleObj.related.offset) % 12];
+            const relScaleObj = SCALES[scaleObj.related.targetScale];
+
+            document.getElementById('theoryCard').innerHTML = `
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <span class="text-[11px] font-bold uppercase tracking-wider text-[#f59e0b]">Gam Kuralı & Formülü</span>
+                        <h2 class="text-base sm:text-lg font-extrabold text-white mt-0.5">${rootNote} (${NOTE_NAMES_TR[rootNote]}) ${scaleObj.name}</h2>
+                    </div>
+                    <span class="px-3 py-1 rounded-xl bg-[#060913] border border-slate-800 text-xs sm:text-sm font-extrabold text-[#38bdf8] tracking-wide">
+                        ${scaleObj.formula}
+                    </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${scaleObj.desc}</p>
+                <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800/80 text-xs">
+                    <div class="text-slate-400">
+                        Notalar: <strong class="text-white tracking-wide">${scaleNotesList.join(' – ')}</strong>
+                    </div>
+                    <button type="button" onclick="applyRelatedScale('${relRoot}', '${scaleObj.related.targetScale}')"
+                        class="px-3 py-1.5 rounded-xl bg-[#060913] hover:bg-slate-800 border border-slate-700 text-[#f59e0b] font-bold transition cursor-pointer">
+                        ${scaleObj.related.label}: ${relRoot} ${relScaleObj.name} →
+                    </button>
+                </div>
+            `;
+
+            state.currentPositions = computePositions(rootNote, state.scaleKey);
+            const grid = document.getElementById('positionsGrid');
+            grid.innerHTML = '';
+
+            state.currentPositions.forEach((pos, idx) => {
+                const startFret = pos.minFret;
+                const endFret = Math.max(pos.maxFret, startFret + 3);
+
+                let octaveBtnHTML = '';
+                if (pos.canToggleOctave) {
+                    octaveBtnHTML = `
+                        <button type="button" onclick="togglePositionOctave(${idx})"
+                            class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#060913] hover:bg-slate-800 border border-slate-700 text-[11px] font-bold text-[#38bdf8] transition cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"></path>
+                            </svg>
+                            <span>Oktav</span>
+                        </button>
+                    `;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'bg-[#0d1323] border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3';
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-sm sm:text-base font-extrabold text-white">${pos.name}</h3>
+                            <span class="text-[11px] text-slate-400">${pos.minFret}. – ${pos.maxFret}. Perde Aralığı</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            ${octaveBtnHTML}
+                            <button type="button" onclick="playPositionSequence(${idx})"
+                                class="px-3 py-1.5 rounded-lg bg-[#f59e0b] hover:bg-amber-400 text-slate-950 text-xs font-extrabold transition cursor-pointer shadow">
+                                ▶ Pozisyonu Çal
+                            </button>
+                        </div>
+                    </div>
+                    ${renderFretboardHTML({
+                        idPrefix: `pos-${idx}`,
+                        startFret,
+                        endFret,
+                        fretsByString: pos.frets,
+                        fingersByString: pos.fingers,
+                        rootNote,
+                        scaleObj,
+                        displayMode: state.displayMode,
+                        scrollable: false
+                    })}
+                `;
+                grid.appendChild(card);
+            });
+
+            const fullFretsByString = STRINGS.map(str => {
+                const arr = [];
+                for (let f = 0; f <= 22; f++) {
+                    const semi = ((str.midi + f) % 12 - rootIdx + 12) % 12;
+                    if (scaleObj.intervals.includes(semi)) arr.push(f);
+                }
+                return arr;
+            });
+
+            document.getElementById('fullFretboardContainer').innerHTML = renderFretboardHTML({
+                idPrefix: 'full',
+                startFret: 0,
+                endFret: 22,
+                fretsByString: fullFretsByString,
+                rootNote,
+                scaleObj,
+                displayMode: state.displayMode === 'finger' ? 'note' : state.displayMode,
+                scrollable: true
+            });
+        }
+
+        // ==========================================
+        // 5. SEKME 2: DÖNÜŞÜM & TAVSİYELER MOTORU
+        // ==========================================
+        function renderTransformationBoards() {
+            const rootNote = state.guideRoot;
+            const rootIdx = CHROMATIC_C.indexOf(rootNote);
+            const basePos = computePositions(rootNote, 'minor_pentatonic')[0];
+            const baseSet = new Set();
+            basePos.frets.forEach((arr, s) => arr.forEach(f => baseSet.add(`${s}-${f}`)));
+
+            const transforms = [
+                {
+                    key: 'minor_pentatonic',
+                    title: `${rootNote} Minör Pentatonik`,
+                    badge: '1 – ♭3 – 4 – 5 – ♭7',
+                    note: 'Tüm dönüşümlerin üzerine kurulduğu 5 notalı ana kutu.',
+                    pos: basePos,
+                    scaleObj: SCALES.minor_pentatonic
+                },
+                {
+                    key: 'natural_minor',
+                    title: `${rootNote} Natürel Minör`,
+                    badge: '+2, +♭6',
+                    note: 'Pentatonik kalıbının boşluklarına 2. ve ♭6. dereceler yerleştirilir.',
+                    pos: computePositions(rootNote, 'natural_minor')[0],
+                    scaleObj: SCALES.natural_minor
+                },
+                {
+                    key: 'blues',
+                    title: `${rootNote} Blues Gamı`,
+                    badge: '+♭5 (Blue Note)',
+                    note: 'Pentatonik iskeletine sadece eksiltilmiş beşli (♭5) eklenir.',
+                    pos: computePositions(rootNote, 'blues')[0],
+                    scaleObj: SCALES.blues
+                },
+                {
+                    key: 'harmonic_minor',
+                    title: `${rootNote} Armonik Minör`,
+                    badge: '+2, +♭6, +7',
+                    note: 'Doğal minördeki ♭7 yarım ses tizleştirilerek 7. yeden ses yapılır.',
+                    pos: computePositions(rootNote, 'harmonic_minor')[0],
+                    scaleObj: SCALES.harmonic_minor
+                },
+                {
+                    key: 'melodic_minor',
+                    title: `${rootNote} Melodik Minör`,
+                    badge: '+2, +6, +7',
+                    note: 'Doğal minörün hem 6. hem 7. derecesi yarım ses tizleştirilir.',
+                    pos: computePositions(rootNote, 'melodic_minor')[0],
+                    scaleObj: SCALES.melodic_minor
+                },
+                {
+                    key: 'jazz_bebop',
+                    title: `${rootNote} Caz Gam (Bebop)`,
+                    badge: '+2, +3, +6 (Kromatik)',
+                    note: '♭3 ile 3 arasındaki kromatik geçiş notasıyla akıcı caz cümleleri kurdurur.',
+                    pos: computePositions(rootNote, 'jazz_bebop')[0],
+                    scaleObj: SCALES.jazz_bebop
+                }
+            ];
+
+            const grid = document.getElementById('transformationBoardsGrid');
+            grid.innerHTML = '';
+
+            transforms.forEach((tr, idx) => {
+                const pos = tr.pos;
+                const scaleObj = tr.scaleObj;
+                const startFret = pos.minFret;
+                const endFret = Math.max(pos.maxFret, startFret + 3);
+
+                const newSet = new Set();
+                if (tr.key !== 'minor_pentatonic') {
+                    pos.frets.forEach((arr, s) => {
+                        arr.forEach(f => {
+                            if (!baseSet.has(`${s}-${f}`)) newSet.add(`${s}-${f}`);
+                        });
+                    });
+                }
+
+                const card = document.createElement('div');
+                card.className = 'bg-[#0d1323] border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3';
+                card.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-sm sm:text-base font-extrabold text-white">${tr.title}</h3>
+                            <p class="text-[11px] text-slate-400 mt-0.5">${tr.note}</p>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg bg-[#060913] border border-slate-800 text-[11px] font-bold text-[#10b981]">
+                            ${tr.badge}
+                        </span>
+                    </div>
+                    ${renderFretboardHTML({
+                        idPrefix: `tr-${idx}`,
+                        startFret,
+                        endFret,
+                        fretsByString: pos.frets,
+                        rootNote,
+                        scaleObj,
+                        displayMode: 'interval',
+                        highlightNewSet: newSet,
+                        scrollable: false
+                    })}
+                `;
+                grid.appendChild(card);
+            });
+
+            const relMaj = CHROMATIC_C[(rootIdx + 3) % 12];
+            const fourthNote = CHROMATIC_C[(rootIdx + 5) % 12];
+            const fifthNote = CHROMATIC_C[(rootIdx + 7) % 12];
+
+            document.getElementById('minorBackingGuide').innerHTML = `
+                <div class="flex items-center gap-2.5">
+                    <span class="w-1.5 h-6 rounded-full bg-[#38bdf8] inline-block"></span>
+                    <h2 class="text-lg sm:text-xl font-extrabold text-white">Gamlar Arası İlişki & Pratik Bağlantılar (${rootNote}m / ${relMaj} Majör)</h2>
+                </div>
+
+                <!-- İlgili Majör / Minör Kardeşliği -->
+                <div class="bg-[#060913] border border-amber-500/30 rounded-xl p-4 space-y-2">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h3 class="text-sm sm:text-base font-extrabold text-[#f59e0b]">İlgili Majör / Minör Kardeşliği: ${rootNote} Natürel Minör ↔ ${relMaj} Majör</h3>
+                        <span class="px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-[#f59e0b] text-[11px] font-bold">Aynı Notalar • Farklı Kök Merkez</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                        <strong class="text-white">${rootNote} Minör</strong> bir altyapı üzerine çalarken klavyedeki tüm <strong class="text-[#38bdf8]">${relMaj} Majör</strong> ve <strong class="text-[#38bdf8]">${relMaj} Majör Pentatonik</strong> pozisyonlarını birebir kullanabilirsiniz. Cümlelerinizi <strong>${rootNote}</strong> notasında bitirdiğinizde hüzünlü minör tınısı, <strong>${relMaj}</strong> notasında bitirdiğinizde ise parlak majör tınısı elde edersiniz.
+                    </p>
+                </div>
+
+                <!-- Modal & Karakteristik Geçişler -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 text-xs sm:text-sm">
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3.5 space-y-1">
+                        <h3 class="font-bold text-[#f59e0b]">1. ${rootNote} Minör Pentatonik</h3>
+                        <p class="text-slate-300 leading-relaxed">En güvenli temeldir. Akorlar hızlı değişse bile uyumsuz ses basma riski yoktur; güçlü rock ve blues cümleleri kurdurur.</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3.5 space-y-1">
+                        <h3 class="font-bold text-[#38bdf8]">2. ${rootNote} Natürel Minör</h3>
+                        <p class="text-slate-300 leading-relaxed">Şarkının duygusunu derinleştirmek istediğinizde özellikle ♭6. dereceyi vurgulayarak şarkı söyler gibi melodik sololar atabilirsiniz.</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3.5 space-y-1">
+                        <h3 class="font-bold text-rose-400">3. ${rootNote} Blues Gamı</h3>
+                        <p class="text-slate-300 leading-relaxed">Pentatonik kalıbının içindeki ♭5 (blue note) sesini yarım ses bend veya slide ile kullanarak soloya kirli ve gergin bir doruk noktası eklersiniz.</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3.5 space-y-1">
+                        <h3 class="font-bold text-purple-400">4. ${rootNote} Armonik Minör</h3>
+                        <p class="text-slate-300 leading-relaxed">Altyapıda V7 (<strong>${fifthNote}7</strong>) akoru geldiği anda devreye girer ve kök akora (<strong>${rootNote}m</strong>) çok güçlü bir çözülme yaratır.</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3.5 space-y-1">
+                        <h3 class="font-bold text-emerald-400">5. ${rootNote} Melodik Minör</h3>
+                        <p class="text-slate-300 leading-relaxed">Minör majör 7 (<strong>${rootNote}m(maj7)</strong>) veya IV7 (<strong>${fourthNote}7</strong>) geçen modern caz/fusion altyapılarında sofistike bir renk verir.</p>
+                    </div>
+                    <div class="bg-[#060913] border border-slate-800 rounded-xl p-3.5 space-y-1">
+                        <h3 class="font-bold text-teal-400">6. ${rootNote} Caz Gam (Bebop)</h3>
+                        <p class="text-slate-300 leading-relaxed">Dominant 7 (<strong>${rootNote}7</strong>) ve II-V-I yürüyüşlerinde ♭3–3 kromatik geçişiyle akor seslerini tam vuruş üstüne oturtur.</p>
+                    </div>
+                </div>
+            `;
+
+            const tips = [
+                { title: 'Hızlı Akor Geçişlerinde', text: 'Akorları takip etmekte zorlanıyorsanız Minör veya Majör Pentatonik kullanın; 5 notalı sade yapıları her akora kolayca oturur.' },
+                { title: 'Mutlu & Hüzünlü Geçiş', text: 'Aynı kök sesten başlayan Majör Pentatonik ile başlayıp cümleyi Minör Pentatonik ile bitirmek klasik bir blues/rock tekniğidir.' },
+                { title: 'Hızlı Pena (Alternate Picking)', text: 'Her telde 3 nota basmaya izin veren Doğal Minör, Armonik Minör veya Melodik Minör kalıpları sağ-sol el senkronizasyonunu çok daha akıcı hale getirir.' },
+                { title: 'Caz & Fusion Rengi', text: 'Klasik minör tınısından uzaklaşıp daha parlak ve modern bir hava yakalamak için Melodik Minör gamının 6. ve 7. derecelerini vurgulayın.' },
+                { title: 'Kirli & Agresif Doruk Noktası', text: 'Rock veya blues solosunda pentatonik kalıbının içindeki ♭5 (Blues) notasını yarım ses bend yaparak veya bir üst perdeye kaydırarak çalın.' },
+                { title: 'Dominant (V7) Gerilim', text: 'Şarkıdaki V7 akor geldiğinde o akorun süresi boyunca Armonik Minör gamına geçin; 7. derecenin yarım ses tizleşmesi çözülme isteğini güçlendirir.' },
+                { title: 'Duygusal & Hüzünlü Melodiler', text: 'Minör bir parçada duyguyu zirveye taşımak için Pentatonik yerine Doğal Minör kullanın; özellikle ♭6. derece melodik derinlik katar.' }
+            ];
+
+            document.getElementById('tipsList').innerHTML = tips.map(t => `
+                <div class="bg-[#060913] border border-slate-800 rounded-xl p-3.5 space-y-1">
+                    <h3 class="text-xs sm:text-sm font-bold text-[#f59e0b]">${t.title}</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">${t.text}</p>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // 6. SEKME 3: AKORLAR, ÇEVRİMLER & TRIADLAR
+        // ==========================================
+        const OPEN_CHORDS = {
+            'C_maj':  [{ label: 'Açık Pozisyon', frets: [-1, 3, 2, 0, 1, 0], fingers: ['', '3', '2', '', '1', ''], barre: null }],
+            'A_maj':  [{ label: 'Açık Pozisyon', frets: [-1, 0, 2, 2, 2, 0], fingers: ['', '', '1', '2', '3', ''], barre: null }],
+            'G_maj':  [{ label: 'Açık Pozisyon', frets: [3, 2, 0, 0, 0, 3], fingers: ['2', '1', '', '', '', '3'], barre: null }],
+            'E_maj':  [{ label: 'Açık Pozisyon', frets: [0, 2, 2, 1, 0, 0], fingers: ['', '2', '3', '1', '', ''], barre: null }],
+            'D_maj':  [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 3, 2], fingers: ['', '', '', '1', '3', '2'], barre: null }],
+            'A_min':  [{ label: 'Açık Pozisyon', frets: [-1, 0, 2, 2, 1, 0], fingers: ['', '', '2', '3', '1', ''], barre: null }],
+            'E_min':  [{ label: 'Açık Pozisyon', frets: [0, 2, 2, 0, 0, 0], fingers: ['', '2', '3', '', '', ''], barre: null }],
+            'D_min':  [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 3, 1], fingers: ['', '', '', '2', '3', '1'], barre: null }],
+            'C_7':    [{ label: 'Açık Pozisyon', frets: [-1, 3, 2, 3, 1, 0], fingers: ['', '3', '2', '4', '1', ''], barre: null }],
+            'A_7':    [{ label: 'Açık Pozisyon', frets: [-1, 0, 2, 0, 2, 0], fingers: ['', '', '2', '', '3', ''], barre: null }],
+            'G_7':    [{ label: 'Açık Pozisyon', frets: [3, 2, 0, 0, 0, 1], fingers: ['3', '2', '', '', '', '1'], barre: null }],
+            'E_7':    [{ label: 'Açık Pozisyon', frets: [0, 2, 0, 1, 0, 0], fingers: ['', '2', '', '1', '', ''], barre: null }],
+            'D_7':    [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 1, 2], fingers: ['', '', '', '2', '1', '3'], barre: null }],
+            'B_7':    [{ label: 'Açık Pozisyon', frets: [-1, 2, 1, 2, 0, 2], fingers: ['', '2', '1', '3', '', '4'], barre: null }],
+            'C_maj7': [{ label: 'Açık Pozisyon', frets: [-1, 3, 2, 0, 0, 0], fingers: ['', '3', '2', '', '', ''], barre: null }],
+            'A_maj7': [{ label: 'Açık Pozisyon', frets: [-1, 0, 2, 1, 2, 0], fingers: ['', '', '2', '1', '3', ''], barre: null }],
+            'G_maj7': [{ label: 'Açık Pozisyon', frets: [3, 2, 0, 0, 0, 2], fingers: ['3', '2', '', '', '', '1'], barre: null }],
+            'E_maj7': [{ label: 'Açık Pozisyon', frets: [0, 2, 1, 1, 0, 0], fingers: ['', '3', '1', '2', '', ''], barre: null }],
+            'D_maj7': [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 2, 2], fingers: ['', '', '', '1', '2', '3'], barre: null }],
+            'F_maj7': [{ label: 'Açık Pozisyon', frets: [-1, -1, 3, 2, 1, 0], fingers: ['', '', '3', '2', '1', ''], barre: null }],
+            'A_m7':   [{ label: 'Açık Pozisyon', frets: [-1, 0, 2, 0, 1, 0], fingers: ['', '', '2', '', '1', ''], barre: null }],
+            'E_m7':   [{ label: 'Açık Pozisyon', frets: [0, 2, 0, 0, 0, 0], fingers: ['', '2', '', '', '', ''], barre: null }],
+            'D_m7':   [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 1, 1], fingers: ['', '', '', '2', '1', '1'], barre: null }],
+            'A_sus2': [{ label: 'Açık Pozisyon', frets: [-1, 0, 2, 2, 0, 0], fingers: ['', '', '1', '2', '', ''], barre: null }],
+            'D_sus2': [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 3, 0], fingers: ['', '', '', '1', '3', ''], barre: null }],
+            'E_sus2': [{ label: 'Açık Pozisyon', frets: [0, 2, 4, 4, 0, 0], fingers: ['', '1', '3', '4', '', ''], barre: null }],
+            'A_sus4': [{ label: 'Açık Pozisyon', frets: [-1, 0, 2, 2, 3, 0], fingers: ['', '', '1', '2', '3', ''], barre: null }],
+            'D_sus4': [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 3, 3], fingers: ['', '', '', '1', '2', '3'], barre: null }],
+            'E_sus4': [{ label: 'Açık Pozisyon', frets: [0, 2, 2, 2, 0, 0], fingers: ['', '2', '3', '4', '', ''], barre: null }],
+            'G_6':    [{ label: 'Açık Pozisyon', frets: [3, 2, 0, 0, 0, 0], fingers: ['2', '1', '', '', '', ''], barre: null }],
+            'E_6':    [{ label: 'Açık Pozisyon', frets: [0, 2, 2, 1, 2, 0], fingers: ['', '2', '3', '1', '4', ''], barre: null }],
+            'C_add9': [{ label: 'Açık Pozisyon', frets: [-1, 3, 2, 0, 3, 0], fingers: ['', '2', '1', '', '3', ''], barre: null }],
+            'G_add9': [{ label: 'Açık Pozisyon', frets: [3, 2, 0, 2, 0, 3], fingers: ['2', '1', '', '3', '', '4'], barre: null }],
+            'D_add9': [{ label: 'Açık Pozisyon', frets: [-1, -1, 0, 2, 3, 0], fingers: ['', '', '', '1', '3', ''], barre: null }]
+        };
+
+        const BARRE_TEMPLATES = {
+            maj:  {
+                e: [0,2,2,1,0,0], ef: ['1','3','4','2','1','1'], eb: [0, 5],
+                a: [-1,0,2,2,2,0], af: ['','1','3','3','3','1'], ab: [1, 5],
+                d: [-1,-1,0,2,3,2], df: ['','','1','2','4','3'], db: null
+            },
+            min:  {
+                e: [0,2,2,0,0,0], ef: ['1','3','4','1','1','1'], eb: [0, 5],
+                a: [-1,0,2,2,1,0], af: ['','1','3','4','2','1'], ab: [1, 5],
+                d: [-1,-1,0,2,3,1], df: ['','','1','3','4','2'], db: null
+            },
+            '7':  {
+                e: [0,2,0,1,0,0], ef: ['1','3','1','2','1','1'], eb: [0, 5],
+                a: [-1,0,2,0,2,0], af: ['','1','3','1','4','1'], ab: [1, 5],
+                d: [-1,-1,0,2,1,2], df: ['','','1','3','2','4'], db: null
+            },
+            maj7: {
+                e: [0,-1,1,1,0,-1], ef: ['1','','2','3','1',''], eb: null,
+                a: [-1,0,2,1,2,0], af: ['','1','3','2','4','1'], ab: [1, 5],
+                d: [-1,-1,0,2,2,2], df: ['','','1','2','3','4'], db: null
+            },
+            m7:   {
+                e: [0,2,0,0,0,0], ef: ['1','3','1','1','1','1'], eb: [0, 5],
+                a: [-1,0,2,0,1,0], af: ['','1','3','1','2','1'], ab: [1, 5],
+                d: [-1,-1,0,2,1,1], df: ['','','1','3','2','2'], db: null
+            },
+            sus2: {
+                e: [0,2,4,4,0,0], ef: ['1','2','3','4','1','1'], eb: [0, 5],
+                a: [-1,0,2,2,0,0], af: ['','1','3','4','1','1'], ab: [1, 5],
+                d: [-1,-1,0,2,3,0], df: ['','','1','2','4','1'], db: null
+            },
+            sus4: {
+                e: [0,2,2,2,0,0], ef: ['1','2','3','4','1','1'], eb: [0, 5],
+                a: [-1,0,2,2,3,0], af: ['','1','2','3','4','1'], ab: [1, 5],
+                d: [-1,-1,0,2,3,3], df: ['','','1','2','3','4'], db: null
+            },
+            m7b5: {
+                e: [0,-1,0,0,-1,-1], ef: ['2','','3','4','',''], eb: null,
+                a: [-1,0,1,0,1,-1], af: ['','1','2','1','3',''], ab: null,
+                d: [-1,-1,0,1,1,1], df: ['','','1','2','3','4'], db: null
+            },
+            dim:  {
+                e: [0,1,2,0,-1,-1], ef: ['1','2','4','1','',''], eb: null,
+                a: [-1,0,1,2,1,-1], af: ['','1','2','4','3',''], ab: null,
+                d: [-1,-1,0,1,3,1], df: ['','','1','2','4','3'], db: null
+            },
+            dim7: {
+                e: [0,-1,-1,0,2,0], ef: ['1','','','2','4','3'], eb: null,
+                a: [-1,0,1,-1,1,-1], af: ['','1','2','','3',''], ab: null,
+                d: [-1,-1,0,1,0,1], df: ['','','1','2','1','3'], db: null
+            },
+            '6':  {
+                e: [0,2,2,1,2,0], ef: ['1','2','3','1','4','1'], eb: [0, 5],
+                a: [-1,0,2,2,2,2], af: ['','1','3','3','3','3'], ab: null,
+                d: [-1,-1,0,2,0,2], df: ['','','1','3','1','4'], db: null
+            },
+            m6:   {
+                e: [0,2,2,0,2,0], ef: ['1','2','3','1','4','1'], eb: [0, 5],
+                a: [-1,0,2,2,1,2], af: ['','1','3','4','2','4'], ab: null,
+                d: [-1,-1,0,2,0,1], df: ['','','1','3','1','2'], db: null
+            },
+            add9: {
+                e: [0,2,4,1,0,0], ef: ['1','2','4','1','1','1'], eb: [0, 5],
+                a: [-1,0,2,4,2,0], af: ['','1','2','4','3','1'], ab: [1, 5],
+                d: [-1,-1,0,2,3,0], df: ['','','1','2','4','1'], db: null
+            }
+        };
+
+        function getChordVoicings(root, typeId) {
+            const voicings = [];
+            const key = `${root}_${typeId}`;
+            const hasOpen = Boolean(OPEN_CHORDS[key]);
+
+            if (hasOpen) {
+                OPEN_CHORDS[key].forEach(v => voicings.push(v));
+            }
+
+            const rootIdx = CHROMATIC_C.indexOf(root);
+            const eShift = (rootIdx - CHROMATIC_C.indexOf('E') + 12) % 12;
+            const aShift = (rootIdx - CHROMATIC_C.indexOf('A') + 12) % 12;
+            const dShift = (rootIdx - CHROMATIC_C.indexOf('D') + 12) % 12;
+            const tpl = BARRE_TEMPLATES[typeId];
+
+            const candidates = [
+                { form: 'E-Şekli', shift: eShift === 0 && hasOpen ? 12 : eShift, base: tpl.e, fingers: tpl.ef, barre: tpl.eb },
+                { form: 'A-Şekli', shift: aShift === 0 && hasOpen ? 12 : aShift, base: tpl.a, fingers: tpl.af, barre: tpl.ab },
+                { form: 'D-Şekli', shift: dShift === 0 && hasOpen ? 12 : dShift, base: tpl.d, fingers: tpl.df, barre: tpl.db }
+            ];
+
+            candidates.sort((x, y) => x.shift - y.shift);
+
+            candidates.forEach(c => {
+                if (c.shift === 0 && hasOpen) return;
+                const frets = c.base.map(f => f === -1 ? -1 : f + c.shift);
+                const barreObj = (c.shift > 0 && c.barre)
+                    ? { fret: c.shift, fromStr: c.barre[0], toStr: c.barre[1] }
+                    : null;
+                voicings.push({
+                    label: c.shift === 0 ? 'Açık Pozisyon' : `${c.shift}. Perde (${c.form})`,
+                    frets,
+                    fingers: c.fingers,
+                    barre: barreObj
+                });
+            });
+
+            return voicings;
+        }
+
+        function renderVerticalChordDiagram(frets, fingers = [], barre = null, highlightBass = false, rootNote = null) {
+            const playedFrets = frets.filter(f => f > 0);
+            const minF = playedFrets.length ? Math.min(...playedFrets) : 1;
+            const maxF = playedFrets.length ? Math.max(...playedFrets) : 4;
+            const startFret = maxF <= 4 ? 1 : minF;
+            const numRows = Math.max(4, maxF - startFret + 1);
+            const bassIdx = frets.findIndex(f => f >= 0);
+            const openMidis = [40, 45, 50, 55, 59, 64];
+
+            let html = `<div class="w-full select-none pt-0.5">`;
+
+            html += `<div class="pl-6 pr-1 grid grid-cols-6 text-center text-[11px] font-extrabold leading-none mb-1">`;
+            frets.forEach(f => {
+                if (f === -1) html += `<span class="text-rose-400">×</span>`;
+                else if (f === 0) html += `<span class="text-slate-200">O</span>`;
+                else html += `<span>&nbsp;</span>`;
+            });
+            html += `</div>`;
+
+            html += `<div class="flex items-start">`;
+            html += `<div class="w-6 shrink-0 text-right pr-1.5 pt-1 text-[10px] sm:text-[11px] font-extrabold text-[#f59e0b]">${startFret > 1 ? startFret + '.p' : ''}</div>`;
+
+            const nutClass = startFret === 1 ? 'border-t-[3.5px] border-slate-200' : 'border-t border-slate-600';
+            html += `<div class="flex-1 mr-1 relative ${nutClass} bg-[#060913] rounded-b-md">`;
+
+            for (let r = 0; r < numRows; r++) {
+                const curFret = startFret + r;
+                const isBarreRow = barre && barre.fret === curFret;
+
+                html += `<div class="grid grid-cols-6 h-6 sm:h-7 border-b border-slate-700/80 relative">`;
+
+                if (isBarreRow) {
+                    const leftPct = (barre.fromStr / 6) * 100 + 2;
+                    const widthPct = ((barre.toStr - barre.fromStr + 1) / 6) * 100 - 4;
+                    html += `
+                        <div class="absolute top-1/2 -translate-y-1/2 h-4 sm:h-[18px] rounded-full bg-[#f59e0b] text-slate-950 text-[9px] font-extrabold flex items-center justify-center z-20 shadow-md tracking-tight"
+                            style="left: ${leftPct}%; width: ${widthPct}%;">
+                            BARE (1)
+                        </div>
+                    `;
+                }
+
+                for (let s = 0; s < 6; s++) {
+                    const isPressed = frets[s] === curFret;
+                    const coveredByBarre = isBarreRow && s >= barre.fromStr && s <= barre.toStr;
+                    const isBass = highlightBass && s === bassIdx;
+                    const noteHere = CHROMATIC_C[(openMidis[s] + curFret) % 12];
+                    const isRootHere = rootNote && noteHere === rootNote;
+
+                    html += `<div class="relative flex items-center justify-center">`;
+                    html += `<div class="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 bg-slate-500/45" style="width:${(1.5 - s * 0.14).toFixed(2)}px;"></div>`;
+
+                    if (isPressed && !coveredByBarre) {
+                        const fLabel = fingers[s] || '•';
+                        const dotStyle = (isBass || isRootHere)
+                            ? 'bg-[#f59e0b] text-slate-950 ring-2 ring-amber-300'
+                            : 'bg-slate-200 text-slate-950 ring-2 ring-amber-500/70';
+                        html += `<span class="relative z-10 w-4 h-4 sm:w-5 sm:h-5 rounded-full ${dotStyle} text-[9px] sm:text-[10px] font-extrabold flex items-center justify-center shadow">${fLabel}</span>`;
+                    }
+                    html += `</div>`;
+                }
+                html += `</div>`;
+            }
+
+            html += `</div></div></div>`;
+            return html;
+        }
+
+        function handleCarouselScroll(el, key, mapName) {
+            const slideWidth = el.clientWidth || 1;
+            const newIdx = Math.round(el.scrollLeft / slideWidth);
+            const targetMap = mapName === 'chord' ? state.chordAltIndex : state.triadAltIndex;
+            if (targetMap[key] !== newIdx) {
+                targetMap[key] = newIdx;
+                updateCardSlideUI(key, newIdx, mapName);
+            }
+        }
+
+        function goToCardSlide(key, idx, mapName) {
+            const track = document.getElementById(`${mapName}-track-${key}`);
+            if (!track) return;
+            const slideWidth = track.clientWidth || 1;
+            track.scrollTo({ left: idx * slideWidth, behavior: 'smooth' });
+            const targetMap = mapName === 'chord' ? state.chordAltIndex : state.triadAltIndex;
+            targetMap[key] = idx;
+            updateCardSlideUI(key, idx, mapName);
+        }
+
+        function updateCardSlideUI(key, activeIdx, mapName) {
+            const dotsWrap = document.getElementById(`${mapName}-dots-${key}`);
+            if (dotsWrap) {
+                Array.from(dotsWrap.children).forEach((dot, i) => {
+                    dot.className = i === activeIdx
+                        ? 'h-1.5 w-4 rounded-full bg-[#f59e0b] transition-all cursor-pointer'
+                        : 'h-1.5 w-1.5 rounded-full bg-slate-700 hover:bg-slate-500 transition-all cursor-pointer';
+                });
+            }
+            const labelEl = document.getElementById(`${mapName}-label-${key}`);
+            if (labelEl && labelEl.dataset.labels) {
+                const labels = JSON.parse(labelEl.dataset.labels);
+                if (labels[activeIdx]) labelEl.textContent = labels[activeIdx];
+            }
+        }
+
+        function playActiveChordSlide(root, typeId) {
+            const voicings = getChordVoicings(root, typeId);
+            const safeKey = root.replace('#', 'sharp');
+            const idx = state.chordAltIndex[safeKey] || 0;
+            const active = voicings[idx] || voicings[0];
+            if (active) playChordStrum(active.frets);
+        }
+
+        function renderChordLibrary() {
+            const chordDef = CHORD_TYPES.find(t => t.id === state.selectedChordType) || CHORD_TYPES[0];
+            const grid = document.getElementById('chordLibraryGrid');
+            grid.innerHTML = '';
+
+            NOTES.forEach(root => {
+                const voicings = getChordVoicings(root, state.selectedChordType);
+                const safeKey = root.replace('#', 'sharp');
+                const activeIdx = state.chordAltIndex[safeKey] || 0;
+                const labelsJson = JSON.stringify(voicings.map(v => v.label));
+
+                const slidesHTML = voicings.map(v => `
+                    <div class="w-full shrink-0 snap-center px-0.5">
+                        ${renderVerticalChordDiagram(v.frets, v.fingers, v.barre, false, root)}
+                    </div>
+                `).join('');
+
+                const dotsHTML = voicings.map((_, i) => `
+                    <button type="button" aria-label="Pozisyon ${i + 1}"
+                        onclick="goToCardSlide('${safeKey}', ${i}, 'chord')"
+                        class="${i === activeIdx ? 'h-1.5 w-4 rounded-full bg-[#f59e0b]' : 'h-1.5 w-1.5 rounded-full bg-slate-700 hover:bg-slate-500'} transition-all cursor-pointer">
+                    </button>
+                `).join('');
+
+                const card = document.createElement('div');
+                card.className = 'bg-[#0d1323] border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xl flex flex-col justify-between space-y-2.5';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-1.5">
+                        <div class="min-w-0">
+                            <h3 class="text-lg sm:text-xl font-extrabold text-white leading-tight truncate">${root}${chordDef.suffix}</h3>
+                            <p class="text-[11px] font-medium text-slate-400 truncate">${NOTE_NAMES_TR[root]} ${chordDef.trName}</p>
+                        </div>
+                        <button type="button" onclick="playActiveChordSlide('${root}', '${state.selectedChordType}')"
+                            class="px-2.5 py-1 rounded-xl bg-amber-500/15 hover:bg-[#f59e0b] text-[#f59e0b] hover:text-slate-950 border border-amber-500/30 text-[11px] font-extrabold transition cursor-pointer shrink-0">
+                            Dinle
+                        </button>
+                    </div>
+
+                    <div id="chord-track-${safeKey}"
+                        onscroll="handleCarouselScroll(this, '${safeKey}', 'chord')"
+                        class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth">
+                        ${slidesHTML}
+                    </div>
+
+                    <div class="pt-0.5 text-center space-y-1.5">
+                        <div id="chord-label-${safeKey}" data-labels='${labelsJson}' class="text-[11px] font-semibold text-slate-300 truncate">
+                            ${voicings[activeIdx].label}
+                        </div>
+                        <div id="chord-dots-${safeKey}" class="flex items-center justify-center gap-1.5">
+                            ${dotsHTML}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderInversions() {
+            const rootIdx = CHROMATIC_C.indexOf(state.invRoot);
+            const typeId = state.invType;
+            const chordDef = CHORD_TYPES.find(t => t.id === typeId);
+            const isSeventh = chordDef.intervals.length === 4;
+            const shift = (rootIdx - CHROMATIC_C.indexOf('C') + 12) % 12;
+
+            const invTemplates = {
+                maj: [
+                    { label: 'Kök Durum', bassOffset: 0, frets: [-1, 3, 2, 0, 1, 0], fingers: ['', '3', '2', '', '1', ''] },
+                    { label: '1. Çevrim (Bas 3\'lü)', bassOffset: 4, frets: [0, -1, 2, 0, 1, 0], fingers: ['', '', '2', '', '1', ''] },
+                    { label: '2. Çevrim (Bas 5\'li)', bassOffset: 7, frets: [3, 3, 2, 0, 1, 0], fingers: ['3', '4', '2', '', '1', ''] }
+                ],
+                min: [
+                    { label: 'Kök Durum', bassOffset: 0, frets: [-1, 3, 1, 0, 1, -1], fingers: ['', '4', '1', '', '2', ''] },
+                    { label: '1. Çevrim (Bas ♭3\'lü)', bassOffset: 3, frets: [-1, -1, 1, 0, 1, 3], fingers: ['', '', '1', '', '2', '4'] },
+                    { label: '2. Çevrim (Bas 5\'li)', bassOffset: 7, frets: [3, 3, 1, 0, 1, -1], fingers: ['3', '4', '1', '', '2', ''] }
+                ],
+                maj7: [
+                    { label: 'Kök Durum', bassOffset: 0, frets: [-1, 3, 5, 4, 5, -1], fingers: ['', '1', '3', '2', '4', ''] },
+                    { label: '1. Çevrim (Bas 3\'lü)', bassOffset: 4, frets: [-1, -1, 2, 4, 5, 3], fingers: ['', '', '1', '3', '4', '2'] },
+                    { label: '2. Çevrim (Bas 5\'li)', bassOffset: 7, frets: [3, -1, 2, 4, 5, -1], fingers: ['2', '', '1', '3', '4', ''] },
+                    { label: '3. Çevrim (Bas 7\'li)', bassOffset: 11, frets: [-1, 2, 2, 0, 1, 0], fingers: ['', '2', '3', '', '1', ''] }
+                ],
+                m7: [
+                    { label: 'Kök Durum', bassOffset: 0, frets: [-1, 3, 5, 3, 4, -1], fingers: ['', '1', '3', '1', '2', ''] },
+                    { label: '1. Çevrim (Bas ♭3\'lü)', bassOffset: 3, frets: [-1, -1, 1, 3, 4, 3], fingers: ['', '', '1', '2', '4', '3'] },
+                    { label: '2. Çevrim (Bas 5\'li)', bassOffset: 7, frets: [3, -1, 1, 3, 4, -1], fingers: ['2', '', '1', '3', '4', ''] },
+                    { label: '3. Çevrim (Bas ♭7\'li)', bassOffset: 10, frets: [-1, 1, 1, 0, 1, -1], fingers: ['', '1', '2', '', '3', ''] }
+                ],
+                '7': [
+                    { label: 'Kök Durum', bassOffset: 0, frets: [-1, 3, 2, 3, 1, -1], fingers: ['', '3', '2', '4', '1', ''] },
+                    { label: '1. Çevrim (Bas 3\'lü)', bassOffset: 4, frets: [-1, -1, 2, 3, 1, 3], fingers: ['', '', '2', '3', '1', '4'] },
+                    { label: '2. Çevrim (Bas 5\'li)', bassOffset: 7, frets: [3, -1, 2, 3, 1, -1], fingers: ['3', '', '2', '4', '1', ''] },
+                    { label: '3. Çevrim (Bas ♭7\'li)', bassOffset: 10, frets: [-1, 1, 2, 0, 1, 0], fingers: ['', '1', '3', '', '2', ''] }
+                ]
+            };
+
+            const list = invTemplates[typeId] || invTemplates.maj;
+            const grid = document.getElementById('inversionsGrid');
+            grid.innerHTML = '';
+
+            list.forEach(item => {
+                if (!isSeventh && item.label.includes('3. Çevrim')) return;
+                const shiftedFrets = item.frets.map(f => f === -1 ? -1 : f + shift);
+                const shiftedFingers = item.fingers.map((fn, sIdx) => {
+                    if (shiftedFrets[sIdx] <= 0) return '';
+                    return fn || '1';
+                });
+                const bassNote = CHROMATIC_C[(rootIdx + item.bassOffset) % 12];
+                const slashName = item.bassOffset === 0 ? `${state.invRoot}${chordDef.suffix}` : `${state.invRoot}${chordDef.suffix}/${bassNote}`;
+
+                const card = document.createElement('div');
+                card.className = 'bg-[#0d1323] border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xl space-y-2.5';
+                card.innerHTML = `
+                    <div class="min-w-0">
+                        <h3 class="text-base sm:text-lg font-extrabold text-[#f59e0b] truncate">${slashName}</h3>
+                        <p class="text-[11px] text-slate-400 truncate">${item.label}</p>
+                    </div>
+                    ${renderVerticalChordDiagram(shiftedFrets, shiftedFingers, null, true)}
+                    <div class="text-center text-[11px] text-slate-400">
+                        Bas Sesi: <strong class="text-white">${bassNote} (${NOTE_NAMES_TR[bassNote]})</strong>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        const TRIAD_SHAPES = {
+            maj: {
+                suffix: '',
+                g123: [
+                    { label: 'Kök Durum (1-3-5)', ref: 'C', frets: [-1, -1, -1, 5, 5, 3], fingers: ['', '', '', '3', '4', '1'] },
+                    { label: '1. Çevrim (3-5-1)', ref: 'C', frets: [-1, -1, -1, 9, 8, 8], fingers: ['', '', '', '2', '1', '1'] },
+                    { label: '2. Çevrim (5-1-3)', ref: 'C', frets: [-1, -1, -1, 0, 1, 0], fingers: ['', '', '', '1', '2', '1'] }
+                ],
+                g234: [
+                    { label: 'Kök Durum (1-3-5)', ref: 'C', frets: [-1, -1, 10, 9, 8, -1], fingers: ['', '', '3', '2', '1', ''] },
+                    { label: '1. Çevrim (3-5-1)', ref: 'C', frets: [-1, -1, 2, 0, 1, -1], fingers: ['', '', '3', '1', '2', ''] },
+                    { label: '2. Çevrim (5-1-3)', ref: 'C', frets: [-1, -1, 5, 5, 5, -1], fingers: ['', '', '1', '2', '3', ''] }
+                ],
+                g345: [
+                    { label: 'Kök Durum (1-3-5)', ref: 'C', frets: [-1, 3, 2, 0, -1, -1], fingers: ['', '3', '2', '1', '', ''] },
+                    { label: '1. Çevrim (3-5-1)', ref: 'C', frets: [-1, 7, 5, 5, -1, -1], fingers: ['', '3', '1', '1', '', ''] },
+                    { label: '2. Çevrim (5-1-3)', ref: 'C', frets: [-1, 10, 10, 9, -1, -1], fingers: ['', '2', '3', '1', '', ''] }
+                ],
+                g456: [
+                    { label: 'Kök Durum (1-3-5)', ref: 'C', frets: [8, 7, 5, -1, -1, -1], fingers: ['4', '3', '1', '', '', ''] },
+                    { label: '1. Çevrim (3-5-1)', ref: 'C', frets: [0, 3, 2, -1, -1, -1], fingers: ['1', '3', '2', '', '', ''] },
+                    { label: '2. Çevrim (5-1-3)', ref: 'C', frets: [3, 3, 5, -1, -1, -1], fingers: ['1', '1', '3', '', '', ''] }
+                ]
+            },
+            min: {
+                suffix: 'm',
+                g123: [
+                    { label: 'Kök Durum (1-♭3-5)', ref: 'C', frets: [-1, -1, -1, 5, 4, 3], fingers: ['', '', '', '3', '2', '1'] },
+                    { label: '1. Çevrim (♭3-5-1)', ref: 'C', frets: [-1, -1, -1, 8, 8, 8], fingers: ['', '', '', '1', '2', '3'] },
+                    { label: '2. Çevrim (5-1-♭3)', ref: 'C', frets: [-1, -1, -1, 12, 13, 11], fingers: ['', '', '', '2', '3', '1'] }
+                ],
+                g234: [
+                    { label: 'Kök Durum (1-♭3-5)', ref: 'C', frets: [-1, -1, 10, 8, 8, -1], fingers: ['', '', '3', '1', '1', ''] },
+                    { label: '1. Çevrim (♭3-5-1)', ref: 'C', frets: [-1, -1, 1, 0, 1, -1], fingers: ['', '', '2', '1', '3', ''] },
+                    { label: '2. Çevrim (5-1-♭3)', ref: 'C', frets: [-1, -1, 5, 5, 4, -1], fingers: ['', '', '2', '3', '1', ''] }
+                ],
+                g345: [
+                    { label: 'Kök Durum (1-♭3-5)', ref: 'C', frets: [-1, 3, 1, 0, -1, -1], fingers: ['', '4', '2', '1', '', ''] },
+                    { label: '1. Çevrim (♭3-5-1)', ref: 'C', frets: [-1, 6, 5, 5, -1, -1], fingers: ['', '2', '1', '1', '', ''] },
+                    { label: '2. Çevrim (5-1-♭3)', ref: 'C', frets: [-1, 10, 10, 8, -1, -1], fingers: ['', '2', '3', '1', '', ''] }
+                ],
+                g456: [
+                    { label: 'Kök Durum (1-♭3-5)', ref: 'C', frets: [8, 6, 5, -1, -1, -1], fingers: ['4', '2', '1', '', '', ''] },
+                    { label: '1. Çevrim (♭3-5-1)', ref: 'C', frets: [11, 10, 10, -1, -1, -1], fingers: ['2', '1', '1', '', '', ''] },
+                    { label: '2. Çevrim (5-1-♭3)', ref: 'C', frets: [3, 3, 4, -1, -1, -1], fingers: ['1', '1', '2', '', '', ''] }
+                ]
+            },
+            dim: {
+                suffix: 'dim',
+                g123: [
+                    { label: 'Kök Durum (1-♭3-♭5)', ref: 'C', frets: [-1, -1, -1, 5, 4, 2], fingers: ['', '', '', '4', '3', '1'] },
+                    { label: '1. Çevrim (♭3-♭5-1)', ref: 'C', frets: [-1, -1, -1, 8, 7, 8], fingers: ['', '', '', '2', '1', '3'] },
+                    { label: '2. Çevrim (♭5-1-♭3)', ref: 'C', frets: [-1, -1, -1, 11, 13, 11], fingers: ['', '', '', '1', '3', '2'] }
+                ],
+                g234: [
+                    { label: 'Kök Durum (1-♭3-♭5)', ref: 'C', frets: [-1, -1, 10, 8, 7, -1], fingers: ['', '', '4', '2', '1', ''] },
+                    { label: '1. Çevrim (♭3-♭5-1)', ref: 'C', frets: [-1, -1, 1, 2, 1, -1], fingers: ['', '', '1', '3', '2', ''] },
+                    { label: '2. Çevrim (♭5-1-♭3)', ref: 'C', frets: [-1, -1, 4, 5, 4, -1], fingers: ['', '', '1', '3', '2', ''] }
+                ],
+                g345: [
+                    { label: 'Kök Durum (1-♭3-♭5)', ref: 'C', frets: [-1, 3, 1, 2, -1, -1], fingers: ['', '3', '1', '2', '', ''] },
+                    { label: '1. Çevrim (♭3-♭5-1)', ref: 'C', frets: [-1, 6, 4, 5, -1, -1], fingers: ['', '3', '1', '2', '', ''] },
+                    { label: '2. Çevrim (♭5-1-♭3)', ref: 'C', frets: [-1, 9, 10, 8, -1, -1], fingers: ['', '2', '3', '1', '', ''] }
+                ],
+                g456: [
+                    { label: 'Kök Durum (1-♭3-♭5)', ref: 'C', frets: [8, 6, 4, -1, -1, -1], fingers: ['4', '2', '1', '', '', ''] },
+                    { label: '1. Çevrim (♭3-♭5-1)', ref: 'C', frets: [11, 9, 10, -1, -1, -1], fingers: ['3', '1', '2', '', '', ''] },
+                    { label: '2. Çevrim (♭5-1-♭3)', ref: 'C', frets: [2, 3, 4, -1, -1, -1], fingers: ['1', '2', '3', '', '', ''] }
+                ]
+            },
+            aug: {
+                suffix: 'aug',
+                g123: [
+                    { label: 'Kök Durum (1-3-♯5)', ref: 'C', frets: [-1, -1, -1, 5, 5, 4], fingers: ['', '', '', '2', '3', '1'] },
+                    { label: '1. Çevrim (3-♯5-1)', ref: 'C', frets: [-1, -1, -1, 9, 9, 8], fingers: ['', '', '', '2', '3', '1'] },
+                    { label: '2. Çevrim (♯5-1-3)', ref: 'C', frets: [-1, -1, -1, 1, 1, 0], fingers: ['', '', '', '2', '3', '1'] }
+                ],
+                g234: [
+                    { label: 'Kök Durum (1-3-♯5)', ref: 'C', frets: [-1, -1, 10, 9, 9, -1], fingers: ['', '', '2', '1', '1', ''] },
+                    { label: '1. Çevrim (3-♯5-1)', ref: 'C', frets: [-1, -1, 2, 1, 1, -1], fingers: ['', '', '2', '1', '1', ''] },
+                    { label: '2. Çevrim (♯5-1-3)', ref: 'C', frets: [-1, -1, 6, 5, 5, -1], fingers: ['', '', '2', '1', '1', ''] }
+                ],
+                g345: [
+                    { label: 'Kök Durum (1-3-♯5)', ref: 'C', frets: [-1, 3, 2, 1, -1, -1], fingers: ['', '3', '2', '1', '', ''] },
+                    { label: '1. Çevrim (3-♯5-1)', ref: 'C', frets: [-1, 7, 6, 5, -1, -1], fingers: ['', '3', '2', '1', '', ''] },
+                    { label: '2. Çevrim (♯5-1-3)', ref: 'C', frets: [-1, 11, 10, 9, -1, -1], fingers: ['', '3', '2', '1', '', ''] }
+                ],
+                g456: [
+                    { label: 'Kök Durum (1-3-♯5)', ref: 'C', frets: [8, 7, 6, -1, -1, -1], fingers: ['3', '2', '1', '', '', ''] },
+                    { label: '1. Çevrim (3-♯5-1)', ref: 'C', frets: [0, 3, 2, -1, -1, -1], fingers: ['1', '3', '2', '', '', ''] },
+                    { label: '2. Çevrim (♯5-1-3)', ref: 'C', frets: [4, 3, 2, -1, -1, -1], fingers: ['3', '2', '1', '', '', ''] }
+                ]
+            }
+        };
+
+        function getTransposedTriadList(groupKey) {
+            const rootIdx = CHROMATIC_C.indexOf(state.triadRoot);
+            const tObj = TRIAD_SHAPES[state.triadType] || TRIAD_SHAPES.maj;
+            const list = tObj[groupKey];
+
+            return list.map(item => {
+                const shift = (rootIdx - CHROMATIC_C.indexOf(item.ref) + 12) % 12;
+                let frets = item.frets.map(f => f === -1 ? -1 : f + shift);
+                const maxF = Math.max(...frets.filter(f => f >= 0));
+                if (maxF > 15) {
+                    const minF = Math.min(...frets.filter(f => f >= 0));
+                    if (minF >= 12) {
+                        frets = frets.map(f => f === -1 ? -1 : f - 12);
+                    }
+                }
+                const fingers = item.fingers.map((fn, sIdx) => frets[sIdx] <= 0 ? '' : (fn || '1'));
+                return { label: item.label, frets, fingers };
+            });
+        }
+
+        function renderTriads() {
+            const tObj = TRIAD_SHAPES[state.triadType] || TRIAD_SHAPES.maj;
+            const groups = [
+                { key: 'g123', title: '1 – 2 – 3. Teller', sub: 'İnce Teller (G - B - e)' },
+                { key: 'g234', title: '2 – 3 – 4. Teller', sub: 'Orta-Üst Teller (D - G - B)' },
+                { key: 'g345', title: '3 – 4 – 5. Teller', sub: 'Orta-Alt Teller (A - D - G)' },
+                { key: 'g456', title: '4 – 5 – 6. Teller', sub: 'Bas Teller (E - A - D)' }
+            ];
+
+            const grid = document.getElementById('triadsGrid');
+            grid.innerHTML = '';
+
+            groups.forEach(g => {
+                const list = getTransposedTriadList(g.key);
+                const activeIdx = state.triadAltIndex[g.key] || 0;
+                const labelsJson = JSON.stringify(list.map(x => x.label));
+
+                const slidesHTML = list.map(v => `
+                    <div class="w-full shrink-0 snap-center px-0.5">
+                        ${renderVerticalChordDiagram(v.frets, v.fingers, null, false, state.triadRoot)}
+                    </div>
+                `).join('');
+
+                const dotsHTML = list.map((_, i) => `
+                    <button type="button" aria-label="Çevrim ${i + 1}"
+                        onclick="goToCardSlide('${g.key}', ${i}, 'triad')"
+                        class="${i === activeIdx ? 'h-1.5 w-4 rounded-full bg-[#f59e0b]' : 'h-1.5 w-1.5 rounded-full bg-slate-700 hover:bg-slate-500'} transition-all cursor-pointer">
+                    </button>
+                `).join('');
+
+                const card = document.createElement('div');
+                card.className = 'bg-[#0d1323] border border-slate-800 rounded-2xl p-3 sm:p-3.5 shadow-xl flex flex-col justify-between space-y-2.5';
+                card.innerHTML = `
+                    <div class="min-w-0">
+                        <h3 class="text-sm sm:text-base font-extrabold text-white truncate">${state.triadRoot}${tObj.suffix} • ${g.title}</h3>
+                        <p class="text-[11px] text-slate-400 truncate">${g.sub}</p>
+                    </div>
+
+                    <div id="triad-track-${g.key}"
+                        onscroll="handleCarouselScroll(this, '${g.key}', 'triad')"
+                        class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth">
+                        ${slidesHTML}
+                    </div>
+
+                    <div class="pt-0.5 text-center space-y-1.5">
+                        <div id="triad-label-${g.key}" data-labels='${labelsJson}' class="text-[11px] font-semibold text-[#f59e0b] truncate">
+                            ${list[activeIdx].label}
+                        </div>
+                        <div id="triad-dots-${g.key}" class="flex items-center justify-center gap-1.5">
+                            ${dotsHTML}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function switchChordSubTab(sub) {
+            state.chordSubTab = sub;
+            ['library', 'inversions', 'triads'].forEach(k => {
+                const el = document.getElementById(`chordSub${k.charAt(0).toUpperCase() + k.slice(1)}`);
+                if (el) el.classList.toggle('hidden', k !== sub);
+            });
+
+            const btnMap = { library: 'subTabLibBtn', inversions: 'subTabInvBtn', triads: 'subTabTriadsBtn' };
+            Object.entries(btnMap).forEach(([k, id]) => {
+                const btn = document.getElementById(id);
+                if (!btn) return;
+                btn.className = k === sub
+                    ? 'py-2.5 px-2 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer bg-[#f59e0b] text-slate-950 shadow'
+                    : 'py-2.5 px-2 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer text-slate-400 hover:text-white';
+            });
+
+            if (sub === 'library') renderChordLibrary();
+            else if (sub === 'inversions') renderInversions();
+            else if (sub === 'triads') renderTriads();
+        }
+
+        // ==========================================
+        // 7. ALT NAVİGASYON GEÇİŞLERİ VE BAŞLATMA
+        // ==========================================
+        function switchMainTab(tab) {
+            state.activeTab = tab;
+            const tabScales = document.getElementById('tabScales');
+            const tabGuide = document.getElementById('tabGuide');
+            const tabChords = document.getElementById('tabChords');
+
+            const navScales = document.getElementById('navBtnScales');
+            const navGuide = document.getElementById('navBtnGuide');
+            const navChords = document.getElementById('navBtnChords');
+
+            const activeNavCls = 'flex flex-col items-center justify-center gap-1 text-[#f59e0b] transition cursor-pointer';
+            const inactiveNavCls = 'flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-slate-200 transition cursor-pointer';
+
+            tabScales.classList.add('hidden');
+            tabGuide.classList.add('hidden');
+            tabChords.classList.add('hidden');
+
+            navScales.className = inactiveNavCls;
+            navGuide.className = inactiveNavCls;
+            navChords.className = inactiveNavCls;
+
+            if (tab === 'scales') {
+                tabScales.classList.remove('hidden');
+                navScales.className = activeNavCls;
+            } else if (tab === 'guide') {
+                tabGuide.classList.remove('hidden');
+                navGuide.className = activeNavCls;
+                renderTransformationBoards();
+            } else if (tab === 'chords') {
+                tabChords.classList.remove('hidden');
+                navChords.className = activeNavCls;
+                switchChordSubTab(state.chordSubTab);
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function initApp() {
+            const rootSelect = document.getElementById('rootSelect');
+            const guideRootSelect = document.getElementById('guideRootSelect');
+            const invRootSelect = document.getElementById('invRootSelect');
+            const triadRootSelect = document.getElementById('triadRootSelect');
+
+            NOTES.forEach(note => {
+                const optText = `${note} (${NOTE_NAMES_TR[note]})`;
+                [rootSelect, guideRootSelect, invRootSelect, triadRootSelect].forEach(sel => {
+                    if (!sel) return;
+                    const opt = document.createElement('option');
+                    opt.value = note;
+                    opt.textContent = optText;
+                    opt.className = 'bg-[#0d1323] text-white';
+                    if ((sel === invRootSelect || sel === triadRootSelect) && note === 'C') opt.selected = true;
+                    else if (sel !== invRootSelect && sel !== triadRootSelect && note === 'A') opt.selected = true;
+                    sel.appendChild(opt);
+                });
+            });
+
+            const chordTypeDropdown = document.getElementById('chordTypeDropdown');
+            CHORD_TYPES.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = t.label;
+                opt.className = 'bg-[#0d1323] text-white';
+                chordTypeDropdown.appendChild(opt);
+            });
+            chordTypeDropdown.addEventListener('change', (e) => {
+                state.selectedChordType = e.target.value;
+                state.chordAltIndex = {};
+                renderChordLibrary();
+            });
+
+            const invTypeSelect = document.getElementById('invTypeSelect');
+            [
+                { id: 'maj', label: 'Majör' },
+                { id: 'min', label: 'Minör (m)' },
+                { id: '7', label: 'Dominant 7 (7)' },
+                { id: 'maj7', label: 'Majör 7 (Maj7)' },
+                { id: 'm7', label: 'Minör 7 (m7)' }
+            ].forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = t.label;
+                opt.className = 'bg-[#0d1323] text-white';
+                invTypeSelect.appendChild(opt);
+            });
+            invRootSelect.addEventListener('change', (e) => {
+                state.invRoot = e.target.value;
+                renderInversions();
+            });
+            invTypeSelect.addEventListener('change', (e) => {
+                state.invType = e.target.value;
+                renderInversions();
+            });
+
+            const triadTypeSelect = document.getElementById('triadTypeSelect');
+            [
+                { id: 'maj', label: 'Majör (1-3-5)' },
+                { id: 'min', label: 'Minör (1-♭3-5)' },
+                { id: 'dim', label: 'Diminished (1-♭3-♭5)' },
+                { id: 'aug', label: 'Augmented (1-3-♯5)' }
+            ].forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t.id;
+                opt.textContent = t.label;
+                opt.className = 'bg-[#0d1323] text-white';
+                triadTypeSelect.appendChild(opt);
+            });
+            triadRootSelect.addEventListener('change', (e) => {
+                state.triadRoot = e.target.value;
+                state.triadAltIndex = {};
+                renderTriads();
+            });
+            triadTypeSelect.addEventListener('change', (e) => {
+                state.triadType = e.target.value;
+                state.triadAltIndex = {};
+                renderTriads();
+            });
+
+            const scaleSelect = document.getElementById('scaleSelect');
+            Object.entries(SCALES).forEach(([key, scale]) => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = scale.name;
+                opt.className = 'bg-[#0d1323] text-white';
+                if (key === state.scaleKey) opt.selected = true;
+                scaleSelect.appendChild(opt);
+            });
+
+            rootSelect.addEventListener('change', (e) => {
+                state.root = e.target.value;
+                state.octaveOverrides = {};
+                renderApp();
+            });
+
+            guideRootSelect.addEventListener('change', (e) => {
+                state.guideRoot = e.target.value;
+                renderTransformationBoards();
+            });
+
+            scaleSelect.addEventListener('change', (e) => {
+                state.scaleKey = e.target.value;
+                state.octaveOverrides = {};
+                renderApp();
+            });
+
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    state.displayMode = btn.dataset.mode;
+                    document.querySelectorAll('.mode-btn').forEach(b => {
+                        b.className = 'mode-btn py-1.5 rounded-lg text-[11px] sm:text-xs font-semibold transition cursor-pointer text-slate-400 hover:text-white';
+                    });
+                    btn.className = 'mode-btn py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition cursor-pointer bg-[#f59e0b] text-slate-950 shadow';
+                    renderApp();
+                });
+            });
+
+            renderApp();
+        }
+
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
