@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Gitar Gam Rehberi">
     <title>Gitar Gam Rehberi</title>
+    <link id="faviconLink" rel="icon" type="image/png">
+    <link id="appleTouchIconLink" rel="apple-touch-icon">
+    <link id="manifestLink" rel="manifest">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -297,6 +304,255 @@
 
     <script>
         // ==========================================
+        // 0. ANA EKRAN İKONU (BEYAZ STRATOCASTER + MAPLE SAP + SİYAH ARKA PLAN)
+        // ==========================================
+        function generateStratocasterAppIcon(size = 512) {
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return '';
+
+                // Tam siyah arka plan (#000000)
+                ctx.fillStyle = '#000000';
+                ctx.fillRect(0, 0, size, size);
+
+                // Hafif derinlik veren merkez parlaklığı (siyah zemine zarar vermeden)
+                const bgGlow = ctx.createRadialGradient(
+                    size * 0.52, size * 0.5, size * 0.05,
+                    size * 0.52, size * 0.5, size * 0.52
+                );
+                bgGlow.addColorStop(0, 'rgba(255, 255, 255, 0.06)');
+                bgGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = bgGlow;
+                ctx.fillRect(0, 0, size, size);
+
+                // Gitarı diagonal konumlandır (sol-alt gövde -> sağ-üst baş)
+                ctx.save();
+                ctx.translate(size * 0.5, size * 0.52);
+                ctx.rotate(-Math.PI / 4.25);
+
+                const s = size / 512;
+
+                // 1. MAPLE SAP & KLAVYE (Açık akçaağaç tonu)
+                const neckGrad = ctx.createLinearGradient(-15 * s, 0, 15 * s, 0);
+                neckGrad.addColorStop(0, '#c89656');
+                neckGrad.addColorStop(0.5, '#e8be82');
+                neckGrad.addColorStop(1, '#b98341');
+
+                ctx.fillStyle = neckGrad;
+                ctx.beginPath();
+                ctx.roundRect(-13 * s, -225 * s, 26 * s, 215 * s, 3 * s);
+                ctx.fill();
+
+                // Klavye üzerinde perdeler ve dot marker'lar
+                ctx.strokeStyle = 'rgba(70, 42, 16, 0.45)';
+                ctx.lineWidth = 1.4 * s;
+                const fretCount = 12;
+                for (let i = 1; i <= fretCount; i++) {
+                    const fy = -25 * s - i * (14 * s);
+                    ctx.beginPath();
+                    ctx.moveTo(-12.5 * s, fy);
+                    ctx.lineTo(12.5 * s, fy);
+                    ctx.stroke();
+
+                    if ([2, 4, 6, 8, 11].includes(i)) {
+                        ctx.fillStyle = 'rgba(42, 24, 9, 0.65)';
+                        ctx.beginPath();
+                        ctx.arc(0, fy + 7 * s, 2.3 * s, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                // Nut (Eşik)
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(-13.5 * s, -195 * s, 27 * s, 4 * s);
+
+                // 2. FENDER STRATOCASTER HEADSTOCK (Klasik kıvrımlı baş)
+                ctx.fillStyle = neckGrad;
+                ctx.beginPath();
+                ctx.moveTo(-13 * s, -225 * s);
+                ctx.quadraticCurveTo(-15 * s, -246 * s, -23 * s, -254 * s);
+                ctx.quadraticCurveTo(-30 * s, -261 * s, -25 * s, -271 * s);
+                ctx.quadraticCurveTo(-18 * s, -280 * s, -4 * s, -278 * s);
+                ctx.quadraticCurveTo(14 * s, -275 * s, 18 * s, -258 * s);
+                ctx.quadraticCurveTo(20 * s, -240 * s, 13 * s, -225 * s);
+                ctx.closePath();
+                ctx.fill();
+
+                // Burgu mandalları (6 adet tuner)
+                ctx.fillStyle = '#cbd5e1';
+                const tunerY = [-236, -248, -260];
+                tunerY.forEach((ty, idx) => {
+                    // Sol sıra
+                    ctx.beginPath();
+                    ctx.arc(-18 * s, (ty - idx * 2) * s, 3.2 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Sağ sıra
+                    ctx.beginPath();
+                    ctx.arc(16 * s, ty * s, 3.2 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                // 3. BEYAZ STRATOCASTER GÖVDE (Double-cutaway ikonik kontur)
+                const bodyGrad = ctx.createLinearGradient(-85 * s, -10 * s, 85 * s, 155 * s);
+                bodyGrad.addColorStop(0, '#ffffff');
+                bodyGrad.addColorStop(0.55, '#f8fafc');
+                bodyGrad.addColorStop(1, '#e2e8f0');
+
+                ctx.save();
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.55)';
+                ctx.shadowBlur = 18 * s;
+                ctx.shadowOffsetY = 6 * s;
+
+                ctx.fillStyle = bodyGrad;
+                ctx.beginPath();
+                // Üst sağ boynuz
+                ctx.moveTo(14 * s, -15 * s);
+                ctx.bezierCurveTo(38 * s, -24 * s, 66 * s, -18 * s, 72 * s, 6 * s);
+                ctx.bezierCurveTo(76 * s, 22 * s, 64 * s, 36 * s, 74 * s, 54 * s);
+                // Alt geniş kıvrım
+                ctx.bezierCurveTo(88 * s, 80 * s, 82 * s, 128 * s, 54 * s, 146 * s);
+                ctx.bezierCurveTo(26 * s, 162 * s, -26 * s, 162 * s, -54 * s, 146 * s);
+                ctx.bezierCurveTo(-82 * s, 128 * s, -88 * s, 80 * s, -74 * s, 54 * s);
+                // Sol alt boynuz ve bel oyuntusu
+                ctx.bezierCurveTo(-64 * s, 36 * s, -76 * s, 22 * s, -72 * s, 6 * s);
+                ctx.bezierCurveTo(-66 * s, -18 * s, -38 * s, -24 * s, -14 * s, -15 * s);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+
+                // Gövde kenar çizgisi
+                ctx.strokeStyle = 'rgba(15, 23, 42, 0.14)';
+                ctx.lineWidth = 1.5 * s;
+                ctx.stroke();
+
+                // 4. BEYAZ PICKGUARD (Darbe koruyucu)
+                ctx.fillStyle = '#f1f5f9';
+                ctx.strokeStyle = 'rgba(148, 163, 184, 0.55)';
+                ctx.lineWidth = 1.2 * s;
+                ctx.beginPath();
+                ctx.moveTo(-13 * s, -12 * s);
+                ctx.lineTo(13 * s, -12 * s);
+                ctx.bezierCurveTo(26 * s, 12 * s, 46 * s, 22 * s, 56 * s, 44 * s);
+                ctx.bezierCurveTo(66 * s, 66 * s, 62 * s, 114 * s, 42 * s, 130 * s);
+                ctx.bezierCurveTo(18 * s, 144 * s, -18 * s, 144 * s, -42 * s, 130 * s);
+                ctx.bezierCurveTo(-56 * s, 118 * s, -52 * s, 88 * s, -34 * s, 76 * s);
+                ctx.bezierCurveTo(-18 * s, 66 * s, -16 * s, 34 * s, -13 * s, -12 * s);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                // 5. 3 ADET SINGLE-COIL MANYETİK (Neck, Middle, Bridge)
+                const pickupY = [10, 36, 62];
+                pickupY.forEach(py => {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.strokeStyle = '#cbd5e1';
+                    ctx.lineWidth = 1 * s;
+                    ctx.beginPath();
+                    ctx.roundRect(-24 * s, py * s, 48 * s, 13 * s, 3 * s);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // 6 adet kutup başı (pole piece)
+                    ctx.fillStyle = '#334155';
+                    for (let p = 0; p < 6; p++) {
+                        const px = (-19 + p * 7.6) * s;
+                        ctx.beginPath();
+                        ctx.arc(px, (py + 6.5) * s, 1.45 * s, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                // 6. KÖPRÜ (Bridge) & TREMOLO
+                ctx.fillStyle = '#e2e8f0';
+                ctx.strokeStyle = '#94a3b8';
+                ctx.lineWidth = 1.2 * s;
+                ctx.beginPath();
+                ctx.roundRect(-28 * s, 88 * s, 56 * s, 24 * s, 3 * s);
+                ctx.fill();
+                ctx.stroke();
+
+                // Köprü saddle'ları ve 6 tel
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 1 * s;
+                for (let st = 0; st < 6; st++) {
+                    const sx = (-19 + st * 7.6) * s;
+                    ctx.fillStyle = '#64748b';
+                    ctx.fillRect(sx - 2.2 * s, 91 * s, 4.4 * s, 6 * s);
+
+                    // Tel çizgisi (köprüden eşiğe)
+                    ctx.beginPath();
+                    ctx.moveTo(sx, 94 * s);
+                    ctx.lineTo((-9.5 + st * 3.8) * s, -195 * s);
+                    ctx.stroke();
+                }
+
+                // 7. POTANS DÜĞMELERİ (Volume + 2 Tone)
+                const knobs = [
+                    { x: 34, y: 84 },
+                    { x: 24, y: 108 },
+                    { x: 42, y: 112 }
+                ];
+                knobs.forEach(k => {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.lineWidth = 1.2 * s;
+                    ctx.beginPath();
+                    ctx.arc(k.x * s, k.y * s, 7.5 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = '#cbd5e1';
+                    ctx.beginPath();
+                    ctx.arc(k.x * s, k.y * s, 5 * s, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                ctx.restore();
+                return canvas.toDataURL('image/png');
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function attachStratocasterIcons() {
+            const iconUrl = generateStratocasterAppIcon(512);
+            if (!iconUrl) return;
+
+            const fav = document.getElementById('faviconLink');
+            const apple = document.getElementById('appleTouchIconLink');
+            const manifestEl = document.getElementById('manifestLink');
+
+            if (fav) fav.href = iconUrl;
+            if (apple) apple.href = iconUrl;
+
+            if (manifestEl) {
+                try {
+                    const manifestData = {
+                        name: 'Gitar Gam Rehberi',
+                        short_name: 'Gam Rehberi',
+                        start_url: '.',
+                        display: 'standalone',
+                        background_color: '#000000',
+                        theme_color: '#000000',
+                        icons: [
+                            {
+                                src: iconUrl,
+                                sizes: '512x512',
+                                type: 'image/png',
+                                purpose: 'any maskable'
+                            }
+                        ]
+                    };
+                    const blob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+                    manifestEl.href = URL.createObjectURL(blob);
+                } catch (e) {}
+            }
+        }
+
+        // ==========================================
         // 1. MÜZİK TEORİSİ VERİLERİ & SABİTLER
         // ==========================================
         const NOTES = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
@@ -320,7 +576,7 @@
         const DOUBLE_INLAY_FRETS = [12];
 
         // Tüm pozisyon matrisleri [1. tel (e), 2. tel (B), 3. tel (G), 4. tel (D), 5. tel (A), 6. tel (E)] sırasındadır.
-        // anchor: İşaret parmağının (1. parmak) sabit durduğu ana el merkezi perdesi (refRoot tonuna göre).
+        // Natürel Minör, Minör Pentatonik ve Majör Pentatonik kilitli matrislerdir.
         const SCALES = {
             minor_pentatonic: {
                 name: 'Minör Pentatonik',
@@ -1658,6 +1914,8 @@
         }
 
         function initApp() {
+            attachStratocasterIcons();
+
             const rootSelect = document.getElementById('rootSelect');
             const guideRootSelect = document.getElementById('guideRootSelect');
             const invRootSelect = document.getElementById('invRootSelect');
